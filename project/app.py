@@ -1,14 +1,17 @@
 import os
 
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, redirect, render_template, request, session, flash
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from helpers import login_required, apology
+from forms import Registration, LoginForm
 
 app = Flask(__name__)
+
+app.config['SECRET_KEY'] = '055a23834110d872426d5f7ee0ac198a'
 
 ENV = 'dev'
 if ENV == 'dev':
@@ -35,15 +38,25 @@ class Posts(db.Model):
     content = db.Column(db.Text(), nullable=False)
     agrees = db.Column(db.Integer, nullable=False, default=0)
     disagrees = db.Column(db.Integer, nullable=False, default=0)
-    comments = db.relationship('Comments', backref='comment-author', lazy=True) 
+    comments = db.relationship('Comments', backref='comment-post', lazy=True) 
     posted = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Comments(db.Model):
     id = db.Column(db.Integer, primary_key=True) 
-    author = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
-    post = db.Column(db.Integer, nullable=False)
+    author = db.Column(db.Integer, nullable=False)
+    post = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
     content = db.Column(db.Text(), nullable=False)
     posted = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Followers(db.Model):
+    id = db.Column(db.Integer, primary_key=True) 
+    follower = db.Column(db.Integer) 
+    following = db.Column(db.Integer) 
+
+class Favourites(db.Model):
+    id = db.Column(db.Integer, primary_key=True) 
+    user = db.Column(db.Integer)
+    post = db.Column(db.Integer)
         
 
 # Ensure templates are auto-reloaded

@@ -3,33 +3,6 @@ body{
     background-color: #222226;
 }
 
-main
-{
-    text-align: center;
-}
-
-main .form-control
-{
-    /* Center form controls */
-    display: inline-block;
-
-    /* Override Bootstrap's 100% width for form controls */
-    width: auto;
-}
-
-.mainContainer
-{
-    width: 100%;
-    background-color: #ddd;
-    border-radius: 5vw;
-    display: flex;
-    justify-content: center;
-}
-
-input
-{
-    width: 100%;
-}
 
 #sidebar{
     background-color: #222226;
@@ -85,8 +58,14 @@ main{
     list-style: none;
     border-radius: 30px;
 }
+#add{
+    background-color: var(--red);
+}
+#add:hover{
+    background-color: #f05060 !important;
+}
 #sidebar ul li:not(.avoidtitle):hover{
-    background-color: #262628;
+    background-color: #272729;
 }
 
 #sidebar ul li a{
