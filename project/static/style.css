@@ -1,0 +1,148 @@
+body{
+    font-family: 'Roboto', sans-serif;
+    background-color: #222226;
+}
+
+main
+{
+    text-align: center;
+}
+
+main .form-control
+{
+    /* Center form controls */
+    display: inline-block;
+
+    /* Override Bootstrap's 100% width for form controls */
+    width: auto;
+}
+
+.mainContainer
+{
+    width: 100%;
+    background-color: #ddd;
+    border-radius: 5vw;
+    display: flex;
+    justify-content: center;
+}
+
+input
+{
+    width: 100%;
+}
+
+#sidebar{
+    background-color: #222226;
+    height: 100%;
+    width: 25%;
+    min-width: 275px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+    transition: 0.5s;
+    display: block;
+    border-right: 1px solid #444;
+    justify-content: center;
+}
+
+main{
+    margin-left: 25%;
+}
+
+#openSidebar{
+    position: relative;
+    top: 10px;
+    left: 10px;
+    display: none;
+    color: var(--light);
+}
+.Open{
+    font-size: 60px;
+}
+#closeSidebar{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: none;
+    color: var(--light);
+}
+.Close{
+    font-size: 60px;
+}
+#sidebar ul{
+    position: absolute;
+    top: 40px;
+    left: 15%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+#sidebar ul li{
+    position: relative;
+    width: 230px;
+    list-style: none;
+    border-radius: 30px;
+}
+#sidebar ul li:not(.avoidtitle):hover{
+    background-color: #262628;
+}
+
+#sidebar ul li a{
+    position: relative;
+    display: block;
+    display: flex;
+    width: 100%;
+    list-style: none;
+    text-decoration: none;
+    color: var(--light);
+    margin-bottom: 10px;
+}
+#sidebar ul li a .icon{
+    position: relative;
+    display: block;
+    min-width: 60px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+}
+#sidebar ul li a .icon .material-icons{
+    font-size: 36px;
+    margin-top: 12px;
+}
+#sidebar ul li a .title{
+    position: relative;
+    display: block;
+    padding: 0 10px;
+    height: 60px;
+    font-size: 30px;
+    line-height: 60px;
+    text-align: start;
+    white-space: nowrap;
+}
+
+.bigtitle{
+    font-family: 'Righteous', cursive; 
+    font-size: 40px !important;
+}
+
+
+
+@media screen and (max-width: 600px) {
+    main{
+        margin-left: 0;
+    }
+
+    #sidebar{
+        width: 300px;
+        left: -300px;
+    }
+    #sidebar ul{
+        top: 60px;
+    }
+
+    #openSidebar, #closeSidebar{
+        display: flex;
+    }
+}

@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+: Home
+{% endblock %}
+
+{% block body %}
+    <div id='sidebar'>
+
+        <a id='closeSidebar'><span class="material-icons Close">close</span></a>
+         
+        <ul>
+            <li class='avoidtitle'>
+                <a href="#">
+                    <span class="title bigtitle">H<span>&#128293;</span>tTopics</span>
+                </a>
+            </li>
+            <li>
+                <a href="/home">
+                    <span class="icon"><i class="material-icons">home</i></span>
+                    <span class='title'>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="/search">
+                    <span class="icon"><i class="material-icons">search</i></span>
+                    <span class='title'>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="/favourites">
+                    <span class="icon"><i class="material-icons">favorite</i></span>
+                    <span class='title'>Favourites</span>
+                </a>
+            </li>
+            <li>
+                <a href="/<username>">
+                    <span class="icon"><i class="material-icons">account_circle</i></span>
+                    <span class='title'>Profile</span>
+                </a>
+            </li>
+            <li>
+                <a href="/logout">
+                    <span class="material-icons icon">logout</span>
+                    <span class='title'>Log Out</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <main>
+        <a id='openSidebar'><span class="material-icons Open">menu</span></a>
+
+        {% block main %}
+        
+        {% endblock %}
+    </main>
+
+{% endblock %}
