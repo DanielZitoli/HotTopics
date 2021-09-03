@@ -1,9 +1,5 @@
 {% extends 'layout.html' %}
 
-{% block title %}
-
-{% endblock %}
-
 {% block body %}
     <nav class='navbar navbar-expand navbar-light bg-danger'>
         <a href="/home" class="navbar-brand ml-3" style="font-family: 'Righteous', cursive; font-size: 7vmin;">H<span style='font-size: 6vmin;'>&#128293;</span>tTopics</a>
@@ -14,6 +10,16 @@
     </nav>
     <main>
         <div class="container py-5">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
             {% block main %}
         
             {% endblock %} 
