@@ -1,127 +1,31 @@
+html{
+    height: 100%;
+    overflow-x: hidden;
+}
 body{
     font-family: 'Roboto', sans-serif;
     background-color: #222226;
-}
-
-
-#sidebar{
-    background-color: #222226;
-    height: 100%;
-    width: 25%;
-    min-width: 275px;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
+    min-height: 100%;
+    display: grid;
+    grid-template-columns: 22% 600px 1fr;
     overflow-x: hidden;
-    transition: 0.5s;
-    display: block;
-    border-right: 1px solid #444;
-    justify-content: center;
 }
 
 main{
-    margin-left: 25%;
+    color:oldlace;
+    height: 100%;
 }
 
-#openSidebar{
-    position: relative;
-    top: 10px;
-    left: 10px;
-    display: none;
-    color: var(--light);
-}
-.Open{
-    font-size: 60px;
-}
-#closeSidebar{
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: none;
-    color: var(--light);
-}
-.Close{
-    font-size: 60px;
-}
-#sidebar ul{
-    position: absolute;
-    top: 40px;
-    left: 15%;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-#sidebar ul li{
-    position: relative;
-    width: 230px;
-    list-style: none;
-    border-radius: 30px;
-}
-#add{
-    background-color: var(--red);
-}
-#add:hover{
-    background-color: #f05060 !important;
-}
-#sidebar ul li:not(.avoidtitle):hover{
-    background-color: #272729;
-}
-
-#sidebar ul li a{
-    position: relative;
-    display: block;
-    display: flex;
-    width: 100%;
-    list-style: none;
-    text-decoration: none;
-    color: var(--light);
-    margin-bottom: 10px;
-}
-#sidebar ul li a .icon{
-    position: relative;
-    display: block;
-    min-width: 60px;
-    height: 60px;
-    line-height: 60px;
-    text-align: center;
-}
-#sidebar ul li a .icon .material-icons{
-    font-size: 36px;
-    margin-top: 12px;
-}
-#sidebar ul li a .title{
-    position: relative;
-    display: block;
-    padding: 0 10px;
-    height: 60px;
-    font-size: 30px;
-    line-height: 60px;
-    text-align: start;
-    white-space: nowrap;
-}
-
-.bigtitle{
-    font-family: 'Righteous', cursive; 
-    font-size: 40px !important;
-}
-
-
-
-@media screen and (max-width: 600px) {
-    main{
-        margin-left: 0;
+@media screen and (max-width: 1100px) {
+    body{
+       grid-template-columns: 10% 600px 1fr; 
     }
 
-    #sidebar{
-        width: 300px;
-        left: -300px;
-    }
-    #sidebar ul{
-        top: 60px;
+}
+
+@media screen and (max-width: 660px) {
+    body{
+       grid-template-columns: 60px 1fr 0; 
     }
 
-    #openSidebar, #closeSidebar{
-        display: flex;
-    }
 }

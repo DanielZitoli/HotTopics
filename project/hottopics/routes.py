@@ -53,10 +53,12 @@ def logout():
     return redirect("/")
 
 
+
+
 @app.route("/home")
 @login_required
 def home():
-    return render_template("home.html", tite="Home")
+    return render_template("home.html", title="Home")
 
 @app.route("/<username>")
 @login_required

@@ -19,6 +19,8 @@
         <!-- Link stylesheet and script-->
         {% if current_user.is_authenticated %}
         <link href="/static/main.css" rel="stylesheet">
+        <link href="/static/sidebar.css" rel="stylesheet">
+        <link href="/static/rightbar.css" rel="stylesheet">
         {% else %}
         <link href="/static/index.css" rel="stylesheet">
         {% endif %}

@@ -1,71 +1,72 @@
 {% extends 'layout.html' %}
 
-{% block title %}
-: Home
-{% endblock %}
-
 {% block body %}
-    <div id='sidebar'>
-
-        <a id='closeSidebar'><span class="material-icons Close">close</span></a>
-         
-        <ul>
-            <li class='avoidtitle'>
-                <a href="#">
-                    <span class="title bigtitle">H<span>&#128293;</span>tTopics</span>
-                </a>
-            </li>
-            <li>
-                <a href="/home">
-                    <span class="icon"><i class="material-icons">home</i></span>
-                    <span class='title'>Home</span>
-                </a>
-            </li>
-            <li>
-                <a href="/following">
-                    <span class="icon"><i class="material-icons">people</i></span>
-                    <span class='title'>Following</span>
-                </a>
-            </li>
-            <li>
-                <a href="/favourites">
-                    <span class="icon"><i class="material-icons">favorite</i></span>
-                    <span class='title'>Favourites</span>
-                </a>
-            </li>
-            <li>
-                <a href="/search">
-                    <span class="icon"><i class="material-icons">search</i></span>
-                    <span class='title'>Search</span>
-                </a>
-            </li>
-            <li>
-                <a href="/<username>">
-                    <span class="icon"><i class="material-icons">account_circle</i></span>
-                    <span class='title'>Profile</span>
-                </a>
-            </li>
-            <li>
-                <a href="/logout">
-                    <span class="material-icons icon">logout</span>
-                    <span class='title'>Log Out</span>
-                </a>
-            </li>
-            <li id="add">
-                <a href="/post">
-                    <span class="icon" style="min-width: 50px; height: 50px; line-height: 50px;"><i class="material-icons" style="font-size: 48px; margin-top: 5px; margin-left: 5px;;">add</i></span>
-                    <span class='title' style="padding: 0; ;">Create Post</span>
-                </a>
-            </li>
-        </ul>
+    <div id="sidebar-container" style='z-index: 1;'>
+        <div id='sidebar'>
+            <ul>
+                <div id='navlogo' class="icon">
+                    <span>&#128293;</span>
+                </div>
+                
+                <li class='avoidtitle'>
+                    <a href="#">
+                        <span class="title bigtitle">H<span id='titlelogo'>&#128293;</span>tTopics</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/home">
+                        <span class="icon"><i class="material-icons">home</i></span>
+                        <span class='title'>Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/following">
+                        <span class="icon"><i class="material-icons">people</i></span>
+                        <span class='title'>Following</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/favourites">
+                        <span class="icon"><i class="material-icons">favorite</i></span>
+                        <span class='title'>Favourites</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/search">
+                        <span class="icon"><i class="material-icons">search</i></span>
+                        <span class='title'>Search</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/<username>">
+                        <span class="icon"><i class="material-icons">account_circle</i></span>
+                        <span class='title'>Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/logout">
+                        <span class="material-icons icon">logout</span>
+                        <span class='title'>Log Out</span>
+                    </a>
+                </li>
+                <li class="add">
+                    <a href="/post">
+                        <span class="icon" style="min-width: 50px; height: 50px; line-height: 50px;"><i class="material-icons" style="font-size: 48px; margin-top: 5px; margin-left: 5px;;">add</i></span>
+                        <span class='title' style="padding: 0;">Create Post</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <main>
-        <a id='openSidebar'><span class="material-icons Open">menu</span></a>
-
         {% block main %}
         
         {% endblock %}
     </main>
+
+    <div id="rightbar">
+
+    </div>
 
 {% endblock %}
