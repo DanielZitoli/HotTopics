@@ -1,32 +1,36 @@
 body{
     font-family: 'Roboto', sans-serif;
-    background-color: #222226;
+    color:oldlace;
+    background-color: var(--background);
 }
 
-main
-{
-    text-align: center;
+
+.mainContainer{
+    width: var(--page-width);
+    background-color: var(--background);
+    border-radius: calc(var(--page-width)*.1);
+    margin: calc(var(--page-width)*.05) auto 0;
+    border: 1px solid white;
 }
 
-main .form-control
-{
-    /* Center form controls */
-    display: inline-block;
-
-    /* Override Bootstrap's 100% width for form controls */
-    width: auto;
+.container-form{
+    width: 65% !important;
+    margin-top: 1% !important;
 }
 
-.mainContainer
-{
+input{
     width: 100%;
-    background-color: #ddd;
-    border-radius: 5vw;
-    display: flex;
-    justify-content: center;
 }
 
-input
-{
-    width: 100%;
+:root{
+    --page-width: 600px;
+    --page-width: 600px;
+    --background: #181818;
+    --second-background: #0f0f0f;
+}
+
+@media screen and (max-width: 660px) {
+    :root{
+        --page-width: 80vw;
+    }
 }

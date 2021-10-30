@@ -1,0 +1,90 @@
+.account-header{
+    margin: 2.5% auto;
+    width: 95%;
+    background-color: var(--background);
+    border: 1px solid #444;
+    border-radius: min(20px, 3vw);
+    position: relative; 
+}
+
+.account-img{
+    width: calc(var(--page-width) * 0.25);
+    height: calc(var(--page-width) * 0.25);
+    border: 3px solid rgb(255, 255, 255);
+    margin: calc(var(--page-width)*.025);
+}
+
+.name-contain{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: calc(var(--page-width)*0.6);
+    height: calc(var(--page-width) * 0.25);
+    margin: calc(var(--page-width)*.025);
+}
+
+.account-username{
+    font-size: calc(var(--page-width)*0.07);
+    margin: 0;
+}
+
+.account-joined{
+    color: grey;
+    font-size: calc(var(--page-width)*0.025);
+}
+
+.multi-button{
+    position: absolute;
+    text-decoration: none !important;
+    border: none;
+    padding: 0;
+    outline: none !important;
+    border-radius: calc(var(--page-width)*0.04);
+    height: calc(var(--page-width)*0.08);
+    width: calc(var(--page-width)*0.25);
+    font-size: calc(var(--page-width)*0.03);
+}
+
+.multi-button:hover{
+    box-shadow: 1px 1px 10px #000;
+}
+
+.multi-button:active {
+    transform: scale(0.99);
+}
+
+.account-settings:hover{
+    background-color: #ddd
+}
+
+
+.account-stats{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 2.5%;
+    margin: 0 auto 2.5%;
+    width: 95%;
+    height: calc(var(--page-width) * 0.2);
+}
+
+.account-stat{
+    border-radius: calc(var(--page-width)*.03);
+    height: 100%;
+}
+
+.stat-title{
+    margin-top: 7%;
+    font-size: calc(var(--page-width)*.04);
+    text-align: center;
+}
+.stat-number{
+    margin-top: 10%;
+    font-size: calc(var(--page-width)*0.06);
+    text-align: center;
+}
+
+.account-header, .account-stat{
+    background-color: var(--background);
+    border: 1px solid #444;
+}
+

@@ -1,0 +1,93 @@
+.container-form{
+    width: 75%;
+    margin: 5% auto 0;
+    position: relative;
+    padding-bottom: calc(var(--page-width)*.1);
+}
+
+.form-group{
+    margin-bottom: 5%;
+}
+
+.form-legend{
+    font-size: calc(var(--page-width)*0.07);
+    text-align: center;
+    margin: 0;
+}
+
+.form-text{
+    width: 100%;
+    height: calc(var(--page-width)*.1);
+    border-radius: calc(var(--page-width)*.05);
+    color: white;
+    font-size: calc(var(--page-width)*.04); 
+    border: solid #ddd 1px;
+    padding: 0;
+    margin: 0;
+    padding-left: 5%;
+    outline: none;
+    background-color: var(--second-background);
+    transition: all 0.1s;
+}
+
+.form-text:focus{
+    transform: scale(0.99); 
+    border: solid rgb(255, 92, 92) 2px;
+    box-shadow: 2px 2px 14px #000;
+}
+
+.form-label{
+    font-size: calc(var(--page-width)*.035);
+}
+
+.form-button{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.form-button:hover{
+    background-color: #ddd;
+}
+
+.form-button:active{
+    transform: scale(0.99) translateX(-50%);
+}
+
+.back-button{
+    position: absolute;
+    top: calc(var(--page-width)*.015);
+    left: calc(var(--page-width)*.015);
+    text-decoration: none !important;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none !important;
+    border-radius: calc(var(--page-width)*0.05);
+    height: calc(var(--page-width)*0.1);
+    width: calc(var(--page-width)*0.1);
+    font-size: calc(var(--page-width)*0.05);
+    background-color: var(--background);
+    color: white;
+}
+
+.back-button:hover{
+    background-color: #333;
+}
+
+
+@media screen and (max-width: 660px) {
+    .form-text{
+        height: calc(var(--page-width)*.12);
+        border-radius: calc(var(--page-width)*.06);
+        font-size: calc(var(--page-width)*.05);  
+    }
+
+    .multi-button{
+        border-radius: calc(var(--page-width)*0.05);
+        height: calc(var(--page-width)*0.1);
+        width: calc(var(--page-width)*0.3);
+        font-size: calc(var(--page-width)*0.04)
+    }
+    
+}

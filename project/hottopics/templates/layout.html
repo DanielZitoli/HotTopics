@@ -19,11 +19,15 @@
         <!-- Link stylesheet and script-->
         {% if current_user.is_authenticated %}
         <link href="/static/main.css" rel="stylesheet">
-        <link href="/static/sidebar.css" rel="stylesheet">
-        <link href="/static/rightbar.css" rel="stylesheet">
         {% else %}
         <link href="/static/index.css" rel="stylesheet">
         {% endif %}
+        <link href="/static/sidebar.css" rel="stylesheet">
+        <link href="/static/rightbar.css" rel="stylesheet">
+        <link href="/static/account.css" rel="stylesheet">
+        <link href="/static/settings.css" rel="stylesheet">
+        <link href="/static/post.css" rel="stylesheet">
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="/static/script.js"></script>
         
@@ -34,7 +38,7 @@
 
         <title>
             {% if title%}
-                Hot Topics: {{ title }}
+                HotTopics: {{ title }}
             {% else %}
                 HotTopics
             {% endif %}

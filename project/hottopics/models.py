@@ -1,3 +1,4 @@
+from sqlalchemy.orm import backref, lazyload
 from hottopics import db, login_manager
 from datetime import datetime
 from flask_login import UserMixin
@@ -11,32 +12,57 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(20), nullable=False)
     email = db.Column(db.Text())
     hash = db.Column(db.Text(), nullable=False)
+    followers = db.Column(db.Integer, default=0) 
+    following = db.Column(db.Integer, default=0) 
+    image_file = db.Column(db.Text(), nullable=False, default='default.jpeg')
     joined = db.Column(db.DateTime, default=datetime.utcnow)
-    posts = db.relationship('Posts', backref='post-author', lazy=True)
+    posts = db.relationship('Posts', backref='author', lazy=True)
+    favourites = db.relationship('Favourites', backref='favourites-user', lazy=True)
+    comments = db.relationship('Comments', backref='author', lazy=True) 
+    posts_voted_for = db.relationship('Votes', backref='voter', lazy=True)
+
 
 class Posts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    author = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     content = db.Column(db.Text(), nullable=False)
-    agrees = db.Column(db.Integer, nullable=False, default=0)
-    disagrees = db.Column(db.Integer, nullable=False, default=0)
-    comments = db.relationship('Comments', backref='comment-post', lazy=True) 
+    choice_1 = db.Column(db.Text())
+    votes_1 = db.Column(db.Integer, default=0)
+    choice_2 = db.Column(db.Text())
+    votes_2 = db.Column(db.Integer, default=0)
+    choice_3 = db.Column(db.Text())
+    votes_3 = db.Column(db.Integer, default=0)
+    choice_4 = db.Column(db.Text())
+    votes_4 = db.Column(db.Integer, default=0)
+    likes = db.Column(db.Integer, default=0)
+    comment_count = db.Column(db.Integer, default=0) 
+    comments = db.relationship('Comments', backref='post', lazy=True) 
     posted = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def total_votes(self):
+        return self.votes_1 + self.votes_2 + self.votes_3 + self.votes_4 
 
 class Comments(db.Model):
     id = db.Column(db.Integer, primary_key=True) 
-    author = db.Column(db.Integer, nullable=False)
-    post = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
     content = db.Column(db.Text(), nullable=False)
+    likes = db.Column(db.Integer, default=0)
     posted = db.Column(db.DateTime, default=datetime.utcnow)
 
-class Followers(db.Model):
-    id = db.Column(db.Integer, primary_key=True) 
+class Follows(db.Model):
+    id = db.Column(db.Integer, primary_key=True)  
     follower = db.Column(db.Integer) 
     following = db.Column(db.Integer) 
 
 class Favourites(db.Model):
     id = db.Column(db.Integer, primary_key=True) 
-    user = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post = db.Column(db.Integer)
+
+class Votes(db.Model):
+    id = db.Column(db.Integer, primary_key=True) 
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    post = db.Column(db.Integer)
+    choice = db.Column(db.Integer) 
         

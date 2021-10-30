@@ -1,0 +1,58 @@
+{% extends 'layout-home.html' %}
+
+{% block main %}
+    <form action="" method="POST" enctype="multipart/form-data" class="container-form" autocomplete="off" autofill="off">
+        {{ settingsForm.hidden_tag() }}
+        <fieldset>
+            <legend class="form-legend">Account Info</legend>
+            <div class="form-group">
+                {{ settingsForm.username.label(class="form-label") }}
+
+                {% if settingsForm.username.errors %}
+                    {{ settingsForm.username(class="form-text is-invalid", autocomplete="off") }}
+                    <div class="invalid-feedback">
+                        {% for error in settingsForm.username.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ settingsForm.username(class="form-text") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ settingsForm.email.label(class="form-label") }}
+
+                {% if settingsForm.email.errors %}
+                    {{ settingsForm.email(class="form-text is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in settingsForm.email.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ settingsForm.email(class="form-text") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ settingsForm.picture.label(class="form-label") }}
+                {{ settingsForm.picture(class="form-control-file") }}
+
+                {% if settingsForm.picture.errors %}
+                        {% for error in settingsForm.picture.errors %}
+                            <span class="text-danger">{{ error }}</span></br>
+                        {% endfor %}
+                {% endif %}
+            </div>
+        </fieldset>
+
+        <div class="form-group">
+            {{ settingsForm.submit(class="multi-button form-button") }}
+        </div> 
+    </form>
+
+    <a href="/account/{{ current_user.username }}">
+        <button class="back-button">
+            <span class="icon"><i style="font-size: calc(var(--page-width)*.09); margin-top: calc(var(--page-width)*.005);" class="material-icons">keyboard_backspace</i></span>
+        </button>
+    </a>
+{% endblock %}

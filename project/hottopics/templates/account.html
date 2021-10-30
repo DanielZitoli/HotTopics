@@ -1,0 +1,57 @@
+{% extends 'layout-home.html' %}
+
+{% block main %}
+    <div class="account-header">
+            <img class="rounded-circle account-img" src="{{ url_for('static', filename = 'profile_pics/' + user.image_file) }}">
+            <div class="name-contain">
+                <h1 class="account-username" ><b>{{ user.username }}</b></h1>
+                <h3 class="account-joined" >Joined {{ date_joined }}</h3>
+                {% if current_user==user %}
+                <a href="{{ url_for('settings', username=current_user.username) }}">
+                    <button class="multi-button account-settings">
+                        Edit account
+                    </button>
+                </a>
+                {% else %}
+                <button class="multi-button account-follow">
+                    Follow
+                </button> 
+                {% endif%}
+            </div>
+        
+        <div class="account-stats">
+            <div class="account-stat">
+                <h2 class="stat-title">
+                    <b>Posts</b>
+                </h2>
+                <h3 class="stat-number">
+                    15
+                </h3>
+            </div>
+            <div class="account-stat">
+                <h2 class="stat-title">
+                    <b>Votes</b>
+                </h2>
+                <h3 class="stat-number">
+                    7
+                </h3>
+            </div>
+            <div class="account-stat">
+                <h2 class="stat-title">
+                    <b>Followers</b>
+                </h2>
+                <h3 class="stat-number">
+                    120
+                </h3>
+            </div>
+            <div class="account-stat">
+                <h2 class="stat-title">
+                    <b>Following</b>
+                </h2>
+                <h3 class="stat-number">
+                    673K
+                </h3>
+            </div>
+        </div>
+    </div>
+{% endblock %}

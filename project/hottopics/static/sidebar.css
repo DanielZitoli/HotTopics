@@ -1,5 +1,5 @@
 #sidebar{
-    background-color: #222226;
+    background-color: var(--background);
     height: 100%;
     width: 100%;
     max-width: 80vw;
@@ -27,7 +27,7 @@
     transition: opacity .8s ease-out;
 }
 .add:hover{
-    background-color: #f05060 !important;
+    background-color: #ff5062 !important;
 }
 #sidebar ul li:not(.avoidtitle):hover{
     background-color: #272729;
@@ -98,7 +98,7 @@
     }
 
     .toggleSidebar{
-        width: 300px;
+        width: 300px !important;
         transition: all 0.5s;
     }
     
@@ -114,7 +114,7 @@
 
     .toggleLogo{
         transition: all 0.5s;
-        left: calc(10vw - 65px + 27px);
+        left: calc(10vw - 65px + 27px) !important;
     }
 }
 
@@ -127,7 +127,7 @@
         left: 0;
     }
     .toggleLogo{
-        left: 62px;
+        left: 62px !important;
     }
 
     

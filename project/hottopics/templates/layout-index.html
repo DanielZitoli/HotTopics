@@ -9,20 +9,18 @@
         </ul>
     </nav>
     <main>
-        <div class="container py-5">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-            {% block main %}
-        
-            {% endblock %} 
-        </div>
+        {% block main %}
+    
+        {% endblock %} 
     </main>
 {% endblock %}
