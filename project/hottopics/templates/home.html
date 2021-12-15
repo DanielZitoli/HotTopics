@@ -5,11 +5,11 @@
         {{ title }}
     </h1>
     {% for post in posts %}
-        <div class="post-container">
+        <div id="{{ post.id }}" class="post-container">
             <div class="post-header">
-                <a href="{{ url_for('account', username=post.author.username) }}">
-                    <img class="rounded-circle post-img" src="{{ url_for('static', filename = 'profile_pics/' + post.author.image_file) }}" alt="profile picture">
-                    <h1 class="post-username"><b>{{ post.author.username }}</b></h1>
+                <a href="{{ url_for('account', username=post.author_username) }}">
+                    <img class="rounded-circle post-img" src="{{ url_for('static', filename = 'profile_pics/' + post.author_image) }}" alt="profile picture">
+                    <h1 class="post-username"><b>{{ post.author_username }}</b></h1>
                 </a>
                 <h3 class="post-posted">{{ post.posted.strftime('%Y-%m-%d')}}</h3>
             </div>
@@ -25,17 +25,17 @@
                 {% endif %}
             </div>
             <div class="post-footer">
-                <div class="post-stats">
-                    <span class="icon"><i style="font-size: calc(var(--page-width)*.05); margin-top: calc(var(--page-width)*.015);" class="material-icons">chat_bubble_outline</i></span>
-                    <h5 class="post-stats-stat">10</h5>
+                <div class="post-stats post-comment">
+                    <span class="icon"><i class="material-icons post-icon">chat_bubble_outline</i></span>
+                    <h5 class="post-stats-stat">{{post.comment_count}}</h5>
                 </div>
                 <div class="post-stats">
-                    <span class="icon"><i style="font-size: calc(var(--page-width)*.05); margin-top: calc(var(--page-width)*.015);" class="material-icons">done</i></span>
-                    <h5 class="post-stats-stat">{{post.votes_1 + post.votes_2 + post.votes_3 + post.votes_4}}</h5> 
+                    <span class="icon"><i class="material-icons post-icon">done</i></span>
+                    <h5 class="post-stats-stat">{{post.votes_3}}</h5> 
                 </div>
-                <div class="post-stats">
-                    <span class="icon"><i style="font-size: calc(var(--page-width)*.05); margin-top: calc(var(--page-width)*.015);" class="material-icons">favorite_border</i></span>
-                    <h5 class="post-stats-stat">{{post.id}}</h5>
+                <div class="post-stats post-like">
+                    <span class="icon"><i class="material-icons post-icon">favorite_border</i></span>
+                    <h5 class="post-stats-stat">{{post.likes}}</h5>
                 </div>
             </div>
         </div>

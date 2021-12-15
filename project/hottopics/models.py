@@ -21,7 +21,6 @@ class Users(db.Model, UserMixin):
     comments = db.relationship('Comments', backref='author', lazy=True) 
     posts_voted_for = db.relationship('Votes', backref='voter', lazy=True)
 
-
 class Posts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -40,7 +39,10 @@ class Posts(db.Model):
     posted = db.Column(db.DateTime, default=datetime.utcnow)
 
     def total_votes(self):
-        return self.votes_1 + self.votes_2 + self.votes_3 + self.votes_4 
+        return self.votes_1 + self.votes_2 + self.votes_3 + self.votes_4
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns} 
 
 class Comments(db.Model):
     id = db.Column(db.Integer, primary_key=True) 

@@ -7,13 +7,17 @@
                 <h1 class="account-username" ><b>{{ user.username }}</b></h1>
                 <h3 class="account-joined" >Joined {{ date_joined }}</h3>
                 {% if current_user==user %}
-                <a href="{{ url_for('settings', username=current_user.username) }}">
-                    <button class="multi-button account-settings">
+                <a href="{{ url_for('settings')}}">
+                    <button class="multi-button account-button">
                         Edit account
                     </button>
                 </a>
+                {% elif follow %}
+                <button class="multi-button account-following following">
+                    Following
+                </button> 
                 {% else %}
-                <button class="multi-button account-follow">
+                <button class="multi-button account-button follow">
                     Follow
                 </button> 
                 {% endif%}
@@ -33,7 +37,7 @@
                     <b>Votes</b>
                 </h2>
                 <h3 class="stat-number">
-                    7
+                    0
                 </h3>
             </div>
             <div class="account-stat">
