@@ -178,9 +178,8 @@ def create_post():
         db.session.commit()
         #flash message
         return redirect(url_for('home'))
-    elif request.method == "GET":
-        PostForm.choice_1.data = "Agree"
-        PostForm.choice_2.data = "Disagree"
+    elif request.method == "GET":  
+        pass
     return render_template('create_post.html', title="Create Post", PostForm=PostForm)
 
 def time_since(posted):
@@ -226,14 +225,14 @@ def like():
 def follow():
     user_id = request.form.get("user_id") 
     user = Users.query.get(user_id)
-    follow = Follows.query.filter_by(follower=current_user.id, following=user_id).first()
+    follow = Follows.query.filter_by(follower=current_user.id).filter_by(following=user_id).first()
     if user:
         if follow:
             db.session.delete(follow)
             user.followers = user.followers - 1
             current_user.following = current_user.following - 1 
             db.session.commit()
-            jsonify(action='unfollow')
+            return jsonify(action='unfollow')
         else:
             follow = Follows(follower=current_user.id, following=user_id)
             db.session.add(follow)

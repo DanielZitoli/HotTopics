@@ -1,28 +1,49 @@
 {% extends 'layout-home.html' %}
 
 {% block main %}
-    <div class="account-header">
-            <img class="rounded-circle account-img" src="{{ url_for('static', filename = 'profile_pics/' + user.image_file) }}">
-            <div class="name-contain">
-                <h1 class="account-username" ><b>{{ user.username }}</b></h1>
-                <h3 class="account-joined" >Joined {{ date_joined }}</h3>
-                {% if current_user==user %}
-                <a href="{{ url_for('settings')}}">
-                    <button class="multi-button account-button">
-                        Edit account
-                    </button>
-                </a>
-                {% elif follow %}
-                <button class="multi-button account-following following">
-                    Following
-                </button> 
-                {% else %}
-                <button class="multi-button account-button follow">
-                    Follow
-                </button> 
-                {% endif%}
+
+    <div class="modal" id="unfollowModal" tabindex="-1" role="dialog" aria-labelledby="unfollowModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="unfollowModalLabel">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
             </div>
-        
+            <div class="modal-body">
+            ...
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="account-header">
+        <img class="rounded-circle account-img" src="{{ url_for('static', filename = 'profile_pics/' + user.image_file) }}">
+        <div class="name-contain">
+            <h1 class="account-username" ><b>{{ user.username }}</b></h1>
+            <h3 class="account-joined" >Joined {{ date_joined }}</h3>
+            {% if current_user==user %}
+            <a href="{{ url_for('settings')}}">
+                <button class="multi-button account-button">
+                    Edit account
+                </button>
+            </a>
+            {% elif follow %}
+            <button value="{{ user.id }}" type="button" class="multi-button account-following following" data-toggle="modal" data-target="#unfollowModal">
+                Following
+            </button> 
+            {% else %}
+            <button value="{{ user.id }}" type="button" class="multi-button account-button follow" data-toggle="modal" data-target="#unfollowModal">
+                Follow
+            </button> 
+            {% endif%}
+        </div>
+
         <div class="account-stats">
             <div class="account-stat">
                 <h2 class="stat-title">

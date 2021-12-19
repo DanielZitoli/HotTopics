@@ -26,7 +26,52 @@ $(document).ready(function(){
     });
 
     //Follow/Unfollow AJAX
-    $('.follow').click()
+    $('.follow').click(FollowAPI)
+    $('.unfollowAccount').click(FollowAPI)
+
+    function FollowAPI(e){
+        var $followButton = $(e.target)
+        var follow_id = e.target.value
+        $.ajax({
+            url: '/api/follow',
+            type: "PUT",
+            DataType: "json",
+            data: {'user_id': follow_id},
+
+            success: function(response){
+                if (response.action==='error') {return} 
+
+                if ($followButton.html().trim() === "Follow"){
+                    $followButton.html("Following")
+                } else {
+                    $followButton.html("Follow")
+                }
+
+                $followButton.toggleClass('account-following')
+                $followButton.toggleClass('account-button')
+                $followButton.toggleClass('following')
+                $followButton.toggleClass('follow')  
+
+            }
+        });
+    }
+    
+    $('.following').hover(hoverUnfollow);
+
+    function hoverUnfollow(e){
+        var $followButton = $(e.target)
+
+        if ($followButton.html().trim() == "Following"){
+            $followButton.html("Unfollow?")
+        } else {
+            $followButton.html("Following")
+        } 
+
+        $followButton.toggleClass("account-following")
+        $followButton.toggleClass("account-unfollow")
+    }
+    
+
 
     //Like and Comment Hover CSS
     $(".post-stats").hover(function(e){

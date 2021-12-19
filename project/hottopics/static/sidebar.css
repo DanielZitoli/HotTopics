@@ -3,7 +3,7 @@
     height: 100%;
     width: 100%;
     max-width: 80vw;
-    overflow-x: hidden;
+    overflow-y: auto;
     z-index: 1;
     display: flexbox;
     border-right: 1px solid #444;
