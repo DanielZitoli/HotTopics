@@ -16,6 +16,7 @@
     font-size: calc(var(--page-width) * 0.1);
     font-weight: 900;
     margin: 2% 0 2% 5%;
+    user-select: none;
 }
 
 .post-header{
@@ -32,6 +33,7 @@
     top: calc(var(--page-width) * 0.01);
     left: calc(var(--page-width) * 0.14);
     font-weight: 900;
+    user-select: none;
 }
 
 .post-username:hover{
@@ -44,6 +46,7 @@
     position: absolute;
     top: calc(var(--page-width) * 0.015);
     left: calc(var(--page-width) * 0.015);
+    user-select: none;
 }
 
 .post-img:hover{
@@ -55,6 +58,7 @@
     position: absolute;
     top: calc(var(--page-width) * 0.02);
     right: calc(var(--page-width) * 0.05); 
+    user-select: none;
 }
 
 .post-content{
@@ -108,6 +112,7 @@
     justify-content: center;
     border-radius: calc(var(--page-width)*0.04);
     padding: 0 calc(var(--page-width)*0.02);
+    user-select: none;
 }
 
 .post-stats-stat{

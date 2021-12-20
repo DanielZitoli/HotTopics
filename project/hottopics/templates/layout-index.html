@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <nav class='navbar navbar-expand navbar-light bg-danger'>
+        <a href="/" class="navbar-brand ml-3" style="font-family: 'Righteous', cursive; font-size: 7vmin;">H<span style='font-size: 6vmin;'>&#128293;</span>tTopics</a>
+        <ul class="navbar-nav ml-auto mt-2" style='font-size: 5vmin'>
+            <li class="nav-item"><a class="nav-link" style='margin-right: 3vmin;' href="/signup">Sign Up</a></li>
+            <li class="nav-item"><a class="nav-link" style='margin-right: 3vmin;' href="/login">Log In</a></li>
+        </ul>
+    </nav>
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block main %}
+    
+        {% endblock %} 
+    </main>
+{% endblock %}

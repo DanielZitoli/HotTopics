@@ -28,8 +28,12 @@ $(document).ready(function(){
     //Follow/Unfollow AJAX
     $('.follow').click(FollowAPI)
     $('.unfollowAccount').click(FollowAPI)
+    $('#unfollowButton').hover(function(){
+        console.log('work')
+    })
 
     function FollowAPI(e){
+        console.log(e)
         var $followButton = $(e.target)
         var follow_id = e.target.value
         $.ajax({
