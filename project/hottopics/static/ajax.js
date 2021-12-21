@@ -1,4 +1,49 @@
 $(document).ready(function(){
+
+    var pageNum = 1
+    var contentType = window.location.pathname.split('/')[1]
+    var accountUsername = window.location.pathname.split('/')[2]
+
+    var templateScript = document.querySelector('#post-template')
+    if (templateScript){
+        var postTemplate = Handlebars.compile(templateScript.innerHTML) 
+    }
+
+    $('#loadMore').click(LoadMorePosts)
+
+    $('main').scroll(function(e){
+        if ($('#loadMore').offset().top < 1200){
+          console.log('hi')
+        }
+    });
+
+    function LoadMorePosts(){
+        var $loadButton =  $('#loadMore')
+        console.log(contentType)
+        $.ajax({
+            url: '/api/loadMorePosts',
+            type: "POST",
+            DataType: "json",
+            data: {
+                'contentType': contentType,
+                'accountUsername': accountUsername,
+                'pageNum': pageNum,
+            },
+
+            success: function(data){
+                data.posts.forEach(function(postData, i) {
+                    var post = postTemplate(postData)
+                    $('#loadMore').before(post)
+                });
+            } 
+        })
+    };
+
+
+
+
+
+
     //Like Post AJAX
     $(".post-like").click(function(){
         var like_count = $(this).find('h5')
@@ -96,6 +141,5 @@ $(document).ready(function(){
             $icon.toggleClass('icon-like-hover')
         }
     });
-
 
 });

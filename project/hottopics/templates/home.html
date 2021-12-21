@@ -40,4 +40,49 @@
             </div>
         </div>
     {% endfor %}
+
+    <script id="post-template" type="text/x-handlebars-template">
+        {% raw %}
+            <div id="{{id}}" class="post-container">
+                <div class="post-header">
+                    <a href="/account/{{author_username}}">
+                        <img class="rounded-circle post-img" src="/static/profile_pics/{{author_image}}" alt="profile picture">
+                        <h1 class="post-username"><b>{{author_username}}</b></h1>
+                    </a>
+                    <h3 class="post-posted">{{posted}}</h3>
+                </div>
+                <h2 class="post-content">{{content}}</h2>
+                <div class="post-choices">
+                    <button class="post-choice">{{choice_1}}</button>
+                    <button class="post-choice">{{choice_2}}</button>
+                    {{#if choice_3}}
+                    <button class="post-choice">{{choice_3}}</button>
+                    {{/if}}
+                    {{#if choice_4}}
+                    <button class="post-choice">{{choice_4}}</button>
+                    {{/if}}
+                </div>
+                <div class="post-footer">
+                    <div class="post-stats post-comment">
+                        <span class="icon"><i class="material-icons post-icon">chat_bubble_outline</i></span>
+                        <h5 class="post-stats-stat">{{comment_count}}</h5>
+                    </div>
+                    <div class="post-stats">
+                        <span class="icon"><i class="material-icons post-icon">done</i></span>
+                        <h5 class="post-stats-stat">{{total_votes}}</h5> 
+                    </div>
+                    <div class="post-stats post-like">
+                        <span class="icon"><i class="material-icons post-icon">favorite{{#unless is_liked}}_border{{/unless}}</i></span>
+                        <h5 class="post-stats-stat">{{likes}}</h5>
+                    </div>
+                </div>
+            </div>
+        {% endraw %}
+    </script>
+
+
+
+    <button id="loadMore" class="multi-button">
+        Load More
+    </button>
 {% endblock %}

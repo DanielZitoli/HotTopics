@@ -2,7 +2,7 @@ from operator import pos
 import secrets
 import os
 from PIL import Image
-from flask import redirect, render_template, request, flash, jsonify
+from flask import redirect, render_template, request, flash, jsonify, abort
 from flask.helpers import url_for
 from sqlalchemy.orm import query
 from sqlalchemy.orm.session import Session
@@ -78,8 +78,9 @@ def home():
         post["author_image"] = author.image_file
         posts.append(post)
     jsonify(posts)
+  
 
-    return render_template("home.html", title="Home", posts=posts, time_since=time_since)
+    return render_template("home.html", title="Home", posts=posts)
 
 @app.route("/following")
 @login_required
@@ -94,7 +95,7 @@ def following():
     if posts:
         posts = posts.sort(key=get_time)
     
-    return render_template("home.html", title="Following", posts=posts, time_since=time_since)
+    return render_template("home.html", title="Following", posts=posts)
 
 def get_time(post):
     return post.posted
@@ -108,7 +109,7 @@ def favourites():
     for favourite in favourites:
         posts.append(Posts.query.get(favourite.post))
  
-    return render_template("home.html", title="Favourites", posts=posts, time_since=time_since)
+    return render_template("home.html", title="Favourites", posts=posts)
 
 def serialize_posts(query):
     posts = []
@@ -126,7 +127,6 @@ def account(username):
     user = Users.query.filter_by(username = username).first()
     follow = Follows.query.filter_by(follower=current_user.id, following=user.id).first()
    
-    #posts = user.posts.sort(key=get_time)
     return render_template('account.html', title="Account", user=user, follow=follow, date_joined=display_date(user.joined))
 
 @app.route("/account/settings", methods=["GET", "POST"])
@@ -142,7 +142,6 @@ def settings():
         current_user.username = settingsForm.username.data
         current_user.email = settingsForm.email.data
         db.session.commit()
-        #flash message
         return redirect("/account/" + current_user.username)
     elif request.method == "GET":
         settingsForm.username.data = current_user.username
@@ -176,16 +175,10 @@ def create_post():
         choice_3=PostForm.choice_3.data, choice_4=PostForm.choice_4.data, author=current_user)
         db.session.add(post)
         db.session.commit()
-        #flash message
         return redirect(url_for('home'))
     elif request.method == "GET":  
-        pass
-    return render_template('create_post.html', title="Create Post", PostForm=PostForm)
+        return render_template('create_post.html', title="Create Post", PostForm=PostForm)
 
-def time_since(posted):
-    now = datetime.utcnow
-    difference = now - posted
-    print(difference)
 
 """
 @app.route("/account/<username>/followers")
@@ -198,6 +191,56 @@ def account(username):
 def account(username):
     return
 """
+
+
+@app.route("/api/loadMorePosts", methods=["GET", "POST"])
+@login_required
+def loadMorePosts():
+    contentType = request.form.get("contentType", type=str)
+    accountUsername = request.form.get("accountUsername", type=str)
+    pageNum = request.form.get("pageNum", type=int)
+
+    if contentType == 'home':
+        posts = Posts.query.order_by(Posts.posted.desc()).paginate(per_page=10, page=pageNum)
+    elif contentType == 'following':
+        return
+    elif contentType == 'favourites':
+        favourites = current_user.favourites.order_by(Favourites.date_added.desc())
+        posts = []
+        for favourite in favourites:
+            posts.append(Posts.query.get(favourite.post))
+        posts.paginate(per_page=10, page=pageNum)
+    elif contentType == 'account':
+        user = Users.query.filter_by(username=accountUsername)
+        posts = user.posts.order_by(Posts.posted.desc()).paginate(per_page=10, page=pageNum)
+    else:
+        return jsonify(data='error')
+
+    jsonPosts = []
+    liked_posts = []
+
+    liked = current_user.favourites
+    for like in liked:
+        liked_posts.append(like.post)
+
+    posts = posts.items
+    for post in posts:
+        author = post.author
+        total_votes = post.total_votes()
+        post = post.as_dict()
+        post["author_username"] = author.username
+        post["author_image"] = author.image_file
+        post["total_votes"] = total_votes
+        post["is_liked"] = post['id'] in liked_posts
+        jsonPosts.append(post)
+
+    if current_user.username == accountUsername:
+        ownAccount=True
+    else:
+        ownAccount=False
+
+    return jsonify(posts=jsonPosts, ownAccount=ownAccount)
+
 
 @app.route("/api/like", methods=["PUT"])
 @login_required
@@ -225,6 +268,8 @@ def like():
 def follow():
     user_id = request.form.get("user_id") 
     user = Users.query.get(user_id)
+    if user==current_user:
+        abort(404)
     follow = Follows.query.filter_by(follower=current_user.id).filter_by(following=user_id).first()
     if user:
         if follow:
