@@ -26,15 +26,38 @@ $(document).ready(function(){
     });
 
     //Follow/Unfollow AJAX
-    $('.follow').click(FollowAPI)
-    $('.unfollowAccount').click(FollowAPI)
-    $('#unfollowButton').hover(function(){
-        console.log('work')
-    })
+    $('#unfollowButton').click(FollowAPI)
+
+    $('#follow-unfollow').click(function(e){
+        var $followButton = $('#follow-unfollow')
+
+        if ($followButton.hasClass('follow')){
+            FollowAPI(e)
+        } else if ($followButton.hasClass('following')){
+            $('#unfollowModal').modal('show')
+        }
+    });
+
+    $('#follow-unfollow').mouseenter(function(){
+        var $followButton = $('#follow-unfollow')
+        if ($followButton.hasClass('following')){
+            $followButton.html("Unfollow?")
+            $followButton.removeClass("account-following")
+            $followButton.addClass("account-unfollow") 
+        }
+    });
+
+    $('#follow-unfollow').mouseleave(function(){
+        var $followButton = $('#follow-unfollow')
+        if ($followButton.hasClass('following')){
+            $followButton.html("Following")
+            $followButton.addClass("account-following")
+            $followButton.removeClass("account-unfollow")  
+        }
+    });
 
     function FollowAPI(e){
-        console.log(e)
-        var $followButton = $(e.target)
+        var $followButton = $('#follow-unfollow')
         var follow_id = e.target.value
         $.ajax({
             url: '/api/follow',
@@ -44,7 +67,7 @@ $(document).ready(function(){
 
             success: function(response){
                 if (response.action==='error') {return} 
-
+              
                 if ($followButton.html().trim() === "Follow"){
                     $followButton.html("Following")
                 } else {
@@ -59,22 +82,6 @@ $(document).ready(function(){
             }
         });
     }
-    
-    $('.following').hover(hoverUnfollow);
-
-    function hoverUnfollow(e){
-        var $followButton = $(e.target)
-
-        if ($followButton.html().trim() == "Following"){
-            $followButton.html("Unfollow?")
-        } else {
-            $followButton.html("Following")
-        } 
-
-        $followButton.toggleClass("account-following")
-        $followButton.toggleClass("account-unfollow")
-    }
-    
 
 
     //Like and Comment Hover CSS

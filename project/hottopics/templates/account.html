@@ -4,7 +4,7 @@
 
     <div class="modal fade" id="unfollowModal" tabindex="-1" role="dialog" aria-labelledby="unfollowModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <div class="modal-main">
+            <div class="modal-main modal-content">
                 <div class="my-modal-header">
                     <h3 class="modal-title" id="unfollowModalLabel">Unfollow {{ user.username }}?</h3>
                 </div>
@@ -13,7 +13,7 @@
                 </div>
                 <div class="my-modal-footer">
                     <button type="button" class="modal-button modal-button-white button-left" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="modal-button modal-button-red button-right" value="{{ user.id }}">Unfollow</button>
+                    <button id="unfollowButton" type="button" class="modal-button modal-button-red button-right" data-dismiss="modal" value="{{ user.id }}">Unfollow</button>
                 </div>
             </div>
         </div>
@@ -31,11 +31,11 @@
                 </button>
             </a>
             {% elif follow %}
-            <button value="{{ user.id }}" type="button" class="multi-button account-following following" data-toggle="modal" data-target="#unfollowModal">
+            <button id="follow-unfollow" value="{{ user.id }}" type="button" class="multi-button account-following following">
                 Following
             </button> 
             {% else %}
-            <button value="{{ user.id }}" type="button" class="multi-button account-button follow" data-toggle="modal" data-target="#unfollowModal">
+            <button id="follow-unfollow" value="{{ user.id }}" type="button" class="multi-button account-button follow">
                 Follow
             </button> 
             {% endif%}

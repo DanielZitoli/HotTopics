@@ -70,6 +70,11 @@
     border: 1px solid var(--danger);
 }
 
+.modal-button-red:hover{
+    color: black;
+    background-color: var(--danger);
+}
+
 .modal-button-white{
     color: white;
     background-color: transparent;
