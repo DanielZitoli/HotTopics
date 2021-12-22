@@ -8,7 +8,7 @@ from sqlalchemy.orm import query
 from sqlalchemy.orm.session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, current_user, logout_user, login_required
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from hottopics import app, db
 from hottopics.models import Users, Posts, Comments, Favourites, Follows
@@ -68,34 +68,12 @@ def logout():
 @app.route("/home")
 @login_required
 def home():
-    query = Posts.query.order_by(Posts.posted).all()
-
-    posts = []
-    for post in query:
-        author = post.author
-        post = post.as_dict()
-        post["author_username"] = author.username
-        post["author_image"] = author.image_file
-        posts.append(post)
-    jsonify(posts)
-  
-
-    return render_template("home.html", title="Home", posts=posts)
+    return render_template("home.html", title="Home")
 
 @app.route("/following")
 @login_required
 def following():
-    following = Follows.query.filter(Follows.follower==current_user.id).all()
-    posts = []
-    for follow in following:
-        user_posts = Posts.query.filter(Posts.user_id==follow.following).all()
-        for post in user_posts:
-            posts.append(post)
-
-    if posts:
-        posts = posts.sort(key=get_time)
-    
-    return render_template("home.html", title="Following", posts=posts)
+    return render_template("home.html", title="Following")
 
 def get_time(post):
     return post.posted
@@ -103,23 +81,7 @@ def get_time(post):
 @app.route("/favourites")
 @login_required
 def favourites():
-    favourites = current_user.favourites
-    posts=[]
-
-    for favourite in favourites:
-        posts.append(Posts.query.get(favourite.post))
- 
-    return render_template("home.html", title="Favourites", posts=posts)
-
-def serialize_posts(query):
-    posts = []
-    for post in query:
-        dict_post = post.as_dict()
-        dict_post["total_votes"] = post.total_votes()
-        dict_post["author_username"] = post.author.username
-        dict_post["author_image"] = post.author.image_file
-        posts.append(post)
-    return jsonify(posts)
+    return render_template("home.html", title="Favourites")
 
 @app.route("/account/<username>")
 @login_required
@@ -203,18 +165,36 @@ def loadMorePosts():
     if contentType == 'home':
         posts = Posts.query.order_by(Posts.posted.desc()).paginate(per_page=10, page=pageNum)
     elif contentType == 'following':
-        return
+        follows = Follows.query.filter_by(follower=current_user.id).all()
+        followIDs = []
+        for follow in follows:
+            followIDs.append(follow.following)
+        if not followIDs:
+            return jsonify(error='notfollowing')
+        posts = Posts.query.filter(Posts.user_id.in_(followIDs)).order_by(Posts.posted.desc()).paginate(per_page=10, page=pageNum)
+        if not posts:
+            return jsonify(error='noposts')
     elif contentType == 'favourites':
-        favourites = current_user.favourites.order_by(Favourites.date_added.desc())
-        posts = []
+        favourites = current_user.favourites
+        favouriteIDs = []
         for favourite in favourites:
-            posts.append(Posts.query.get(favourite.post))
-        posts.paginate(per_page=10, page=pageNum)
+            favouriteIDs.append(favourite.post)
+        if not favouriteIDs:
+            return jsonify(error='noposts')
+        posts = Posts.query.join(Favourites, Posts.id==Favourites.post).filter(Posts.id.in_(favouriteIDs)).order_by(Favourites.date_added.desc()).paginate(per_page=10, page=pageNum)
     elif contentType == 'account':
-        user = Users.query.filter_by(username=accountUsername)
-        posts = user.posts.order_by(Posts.posted.desc()).paginate(per_page=10, page=pageNum)
+        user = Users.query.filter_by(username=accountUsername).first()
+        if not user.posts:
+            if current_user == user:
+                return jsonify(error='noposts', ownAccount=True)
+            else:
+                return jsonify(error='noposts', ownAccount=False)
+        posts = Posts.query.filter_by(user_id=user.id).order_by(Posts.posted.desc()).paginate(per_page=10, page=pageNum)
     else:
-        return jsonify(data='error')
+        return jsonify(error='invalid content type')
+
+    lastPage = True if posts.page == posts.pages else False
+    ownAccount = True if current_user.username == accountUsername else False
 
     jsonPosts = []
     liked_posts = []
@@ -227,20 +207,44 @@ def loadMorePosts():
     for post in posts:
         author = post.author
         total_votes = post.total_votes()
+        time_ago = time_since(post.posted)
         post = post.as_dict()
         post["author_username"] = author.username
         post["author_image"] = author.image_file
         post["total_votes"] = total_votes
         post["is_liked"] = post['id'] in liked_posts
+        post["time_since"] = time_ago
         jsonPosts.append(post)
 
-    if current_user.username == accountUsername:
-        ownAccount=True
+    return jsonify(posts=jsonPosts, ownAccount=ownAccount, lastPage=lastPage)
+
+
+def time_since(date):
+    difference = datetime.utcnow()- date
+    days = difference.days
+    if days >= 365:
+        years = int(round(days/365, 0))
+        return f"{years} years ago"
+    if days >= 30:
+        months = int(round(days/30, 0))
+        return f"{months} months ago"
+    if days >= 7:
+        weeks = int(round(days/7, 0))
+        return f"{weeks} weeks ago"
+    if days:
+        return f"{days} days ago"
+
+    seconds = difference.seconds
+    if seconds >= 3600:
+        hours = int(round(seconds/3600, 0))
+        return f"{hours} hours ago"
+    if seconds >= 100:
+        mins = int(round(seconds/60, 0))
+        return f"{mins} mins ago"
+    if seconds >= 30:
+        return "1 min ago"
     else:
-        ownAccount=False
-
-    return jsonify(posts=jsonPosts, ownAccount=ownAccount)
-
+        return "now"
 
 @app.route("/api/like", methods=["PUT"])
 @login_required

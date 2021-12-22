@@ -1,6 +1,8 @@
 $(document).ready(function(){
 
     var pageNum = 1
+    var readyToLoad = true
+
     var contentType = window.location.pathname.split('/')[1]
     var accountUsername = window.location.pathname.split('/')[2]
 
@@ -9,17 +11,17 @@ $(document).ready(function(){
         var postTemplate = Handlebars.compile(templateScript.innerHTML) 
     }
 
-    $('#loadMore').click(LoadMorePosts)
+    LoadMorePosts()
 
     $('main').scroll(function(e){
-        if ($('#loadMore').offset().top < 1200){
-          console.log('hi')
+        if ($('#loadMore').offset().top < 1200 && readyToLoad){
+            pageNum++
+            readyToLoad = false
+            LoadMorePosts()
         }
     });
 
     function LoadMorePosts(){
-        var $loadButton =  $('#loadMore')
-        console.log(contentType)
         $.ajax({
             url: '/api/loadMorePosts',
             type: "POST",
@@ -31,21 +33,47 @@ $(document).ready(function(){
             },
 
             success: function(data){
+                if (data.error){
+                    if (data.error == 'noposts'){
+                        if (contentType == 'home'){
+                            response = 'Oops, something went wrong!'
+                        } else if (contentType == 'following'){
+                            response = "None of the accounts you follow have any posts"
+                        } else if (contentType == 'favourites'){
+                            response = "You don't have any favourites, go like some posts!"
+                        } else if (contentType == 'account'){
+                            if (data.ownAccount){
+                                response = 'Create your own post for it to show here!'
+                            }else{
+                                response = 'This account has no posts'
+                            }
+                        }
+                    } else if (data.error == 'notfollowing'){
+                        response = "You're not following any accounts"
+                    }
+                    $(".post-response").text(response)
+                    return
+                }
+    
                 data.posts.forEach(function(postData, i) {
                     var post = postTemplate(postData)
                     $('#loadMore').before(post)
                 });
+
+                readyToLoad = data.lastPage? false : true;
             } 
         })
     };
 
 
-
-
+    //Vote Post AJAX
+    $("main").on('click', '.post-choice', function(){
+        console.log(document.referrer)
+    });
 
 
     //Like Post AJAX
-    $(".post-like").click(function(){
+    $("main").on('click', ".post-like", function(){
         var like_count = $(this).find('h5')
         var icon = $(this).find('i')
         var id = $(this).parents('.post-container').attr('id')
@@ -130,7 +158,7 @@ $(document).ready(function(){
 
 
     //Like and Comment Hover CSS
-    $(".post-stats").hover(function(e){
+    $("main").on("mouseenter mouseleave", ".post-stats", function(e){
         var $stat = $(e.currentTarget)
         var $icon = $stat.find('.post-icon')
         if ($stat.hasClass('post-comment')){

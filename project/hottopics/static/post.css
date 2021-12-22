@@ -15,8 +15,10 @@
 .main-title{
     font-size: calc(var(--page-width) * 0.1);
     font-weight: 900;
-    margin: 2% 0 2% 5%;
+    margin: 2% 0 2% 0%;
+    padding-left: 5%;
     user-select: none;
+    border-bottom: 1px solid #444;
 }
 
 .post-header{
@@ -54,7 +56,8 @@
 }
 
 .post-posted{
-    font-size: calc(var(--page-width)*.04); 
+    font-size: calc(var(--page-width)*.04);
+    color: rgb(112, 115, 121); 
     position: absolute;
     top: calc(var(--page-width) * 0.02);
     right: calc(var(--page-width) * 0.05); 
@@ -151,3 +154,10 @@
     background-color: #ff000010
 }
 
+.post-response{
+    font-size: calc(var(--page-width)*0.05)
+}
+
+#loadMore{
+    display: none;
+}

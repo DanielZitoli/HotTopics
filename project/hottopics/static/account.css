@@ -1,7 +1,7 @@
 .account-header{
     margin: 2.5% auto;
     width: 95%;
-    background-color: var(--background);
+    background-color: var(--second-background);
     border: 1px solid #444;
     border-radius: min(20px, 3vw);
     position: relative; 
@@ -70,6 +70,8 @@
 .account-stat{
     border-radius: calc(var(--page-width)*.03);
     height: 100%;
+    background-color: var(--background);
+    border: 1px solid #444;
 }
 
 .stat-title{
@@ -81,11 +83,6 @@
     margin-top: 10%;
     font-size: calc(var(--page-width)*0.06);
     text-align: center;
-}
-
-.account-header, .account-stat{
-    background-color: var(--background);
-    border: 1px solid #444;
 }
 
 .account-following{

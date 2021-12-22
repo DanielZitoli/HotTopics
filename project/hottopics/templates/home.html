@@ -4,42 +4,10 @@
     <h1 class="main-title">
         {{ title }}
     </h1>
-    {% for post in posts %}
-        <div id="{{ post.id }}" class="post-container">
-            <div class="post-header">
-                <a href="{{ url_for('account', username=post.author_username) }}">
-                    <img class="rounded-circle post-img" src="{{ url_for('static', filename = 'profile_pics/' + post.author_image) }}" alt="profile picture">
-                    <h1 class="post-username"><b>{{ post.author_username }}</b></h1>
-                </a>
-                <h3 class="post-posted">{{ post.posted.strftime('%Y-%m-%d')}}</h3>
-            </div>
-            <h2 class="post-content">{{ post.content }}</h2>
-            <div class="post-choices">
-                <button class="post-choice">{{ post.choice_1 }}</button>
-                <button class="post-choice">{{ post.choice_2 }}</button>
-                {% if post.choice_3 %}
-                <button class="post-choice">{{ post.choice_3 }}</button>
-                {% if post.choice_4 %}
-                <button class="post-choice">{{ post.choice_4 }}</button>
-                {% endif %}
-                {% endif %}
-            </div>
-            <div class="post-footer">
-                <div class="post-stats post-comment">
-                    <span class="icon"><i class="material-icons post-icon">chat_bubble_outline</i></span>
-                    <h5 class="post-stats-stat">{{post.comment_count}}</h5>
-                </div>
-                <div class="post-stats">
-                    <span class="icon"><i class="material-icons post-icon">done</i></span>
-                    <h5 class="post-stats-stat">{{post.votes_3}}</h5> 
-                </div>
-                <div class="post-stats post-like">
-                    <span class="icon"><i class="material-icons post-icon">favorite_border</i></span>
-                    <h5 class="post-stats-stat">{{post.likes}}</h5>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
+
+    <div class="post-response">
+        
+    </div>
 
     <script id="post-template" type="text/x-handlebars-template">
         {% raw %}
@@ -49,7 +17,7 @@
                         <img class="rounded-circle post-img" src="/static/profile_pics/{{author_image}}" alt="profile picture">
                         <h1 class="post-username"><b>{{author_username}}</b></h1>
                     </a>
-                    <h3 class="post-posted">{{posted}}</h3>
+                    <h3 class="post-posted">{{time_since}}</h3>
                 </div>
                 <h2 class="post-content">{{content}}</h2>
                 <div class="post-choices">
@@ -79,8 +47,6 @@
             </div>
         {% endraw %}
     </script>
-
-
 
     <button id="loadMore" class="multi-button">
         Load More
