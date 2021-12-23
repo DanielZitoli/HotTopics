@@ -211,12 +211,16 @@ def loadMorePosts():
         author = post.author
         total_votes = post.total_votes()
         time_ago = time_since(post.posted)
+        percentages = roundedPercentages(post)
+        vote = Votes.query.filter_by(user_id=current_user.id, post=post.id).first()
         post = post.as_dict()
         post["author_username"] = author.username
         post["author_image"] = author.image_file
         post["total_votes"] = total_votes
         post["is_liked"] = post['id'] in liked_posts
         post["time_since"] = time_ago
+        post["percentages"] = percentages
+        post["choice"] = vote.choice if vote else False
         jsonPosts.append(post)
 
     return jsonify(posts=jsonPosts, ownAccount=ownAccount, lastPage=lastPage)
@@ -314,8 +318,8 @@ def vote():
     post = Posts.query.get(post_id)
     
     if post:
-        #if vote:
-        #   return jsonify(action='alreadyvoted')
+        if vote:
+            return jsonify(action='alreadyvoted')
 
         vote = Votes(user_id=current_user.id, post=post_id, choice=choice)
         db.session.add(vote)
@@ -345,6 +349,9 @@ def roundedPercentages(post):
     if post.choice_4:
         votes.append(post.votes_4)
     sum = post.total_votes()
+    if sum == 0:
+        return ""
+
     percentages = []
     for i in range(0, len(votes)):
         percentages.append([i+1, int((votes[i]/sum*100)//1), (votes[i]/sum)%1])
@@ -367,7 +374,7 @@ def votedPosts():
     votes = Votes.query.filter_by(user_id=current_user.id).all()
     posts={}
     for vote in votes:
-        posts[vote.post] = vote.choice
+        posts[vote.post] = {'choice': vote.choice, 'percentages': roundedPercentages(Posts.query.get(vote.post))}
     return jsonify(posts=posts)
     
 

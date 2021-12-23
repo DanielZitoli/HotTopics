@@ -101,12 +101,11 @@
 }
 
 .post-choice:hover{
-    background-color: #444452;
-    z-index: 500;
+    transform: scale(1.005);
 }
 
 .post-choice:active {
-    transform: scale(0.99);
+    transform: scale(0.995);
 }
 
 .post-footer{
@@ -174,7 +173,6 @@
 
 .choice-percentage{
     position: absolute;
-    display: table;
     right: 0;
     top: 0;
     height: 100%;
@@ -192,7 +190,7 @@
     position: absolute;
     left: 0;
     top: 0;
-    background-color: #222228;
+    background-color: #222226;
     overflow: hidden;
     border-radius: calc(var(--page-width)*.018);
     pointer-events: none;

@@ -1,5 +1,5 @@
 $(document).ready(function(){
-
+   
     var pageNum = 1
     var readyToLoad = true
 
@@ -11,18 +11,7 @@ $(document).ready(function(){
         var postTemplate = Handlebars.compile(templateScript.innerHTML) 
     }
 
-    var votedPosts
-    $.ajax({
-        url: '/api/votedPosts',
-        type: "GET",
-        DataType: "json",
-        data: {},
-        success: function(data){
-            votedPosts = data.posts
-            LoadMorePosts()
-        } 
-    })
-
+    LoadMorePosts()
     
 
     $('main').scroll(function(e){
@@ -71,6 +60,25 @@ $(document).ready(function(){
                 data.posts.forEach(function(postData, i) {
                     var post = postTemplate(postData)
                     $('#loadMore').before(post)
+                    
+                    choice = postData.choice
+                    if (choice){
+                        post = document.getElementById(postData.id)
+                        choice_buttons = $(post).children('.post-choices').children() 
+                        percentages = postData.percentages
+                    
+                        for (let i = 0; i < choice_buttons.length; i++){
+                            if (choice==i+1){
+                                var $text = $(choice_buttons[i]).children('.choice-text')[0]
+                                var $span = $('<span>').addClass('voted-icon')
+                                var $i = $('<i>').addClass('checkmark material-icons').html('done')
+                                $span.append($i)
+                                $text.after($i[0])
+                            }
+                            $(choice_buttons[i]).children('.choice-percentage').text(percentages[i]+'%').show()
+                            $(choice_buttons[i]).children('.choice-percentage-bar').css('width', percentages[i]+'%')
+                        }
+                    }
                 });
 
                 readyToLoad = data.lastPage? false : true;
@@ -79,7 +87,7 @@ $(document).ready(function(){
     };
 
 
-    //Vote Post AJAX
+    //Vote AJAX
     $("main").on('click', '.post-choice', function(e){
         var choice = $(this).val()
         var post_id = $(this).parents('.post-container').attr('id')
