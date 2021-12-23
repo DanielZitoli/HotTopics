@@ -90,16 +90,23 @@ $(document).ready(function(){
             data: {'post_id': post_id, "choice": choice},
 
             success: function(response){
-                var choice_buttons = $(e.target).parent().children() 
-                percentages = response.percentages
-                console.log(choice_buttons)
-                for (let i = 0; i < choice_buttons.length; i++){
-                    
-                    $(choice_buttons[i]).children('.choice-percentage').text(percentages[i]+'%').fadeIn(100, 'linear')
-                    $(choice_buttons[i]).children('.choice-percentage-bar').css('transition', 'width '+percentages[i]/100+'s').css('width', percentages[i]+'%') 
-
-                }
-
+                if (response.action=='alreadyvoted'){
+                    return
+                } else if (response.action=='voted'){
+                    var choice_buttons = $(e.target).parent().children() 
+                    percentages = response.percentages
+                    for (let i = 0; i < choice_buttons.length; i++){
+                        if (choice==i+1){
+                            var $text = $(choice_buttons[i]).children('.choice-text')[0]
+                            var $span = $('<span>').addClass('voted-icon')
+                            var $i = $('<i>').addClass('checkmark material-icons').html('done')
+                            $span.append($i)
+                            $text.after($i[0])
+                        }
+                        $(choice_buttons[i]).children('.choice-percentage').text(percentages[i]+'%').fadeIn(100, 'linear')
+                        $(choice_buttons[i]).children('.choice-percentage-bar').css('width', percentages[i]+'%').css('transition', 'width '+percentages[i]/100+'s ease-out')
+                    }
+                }   
             }
         }); 
     });

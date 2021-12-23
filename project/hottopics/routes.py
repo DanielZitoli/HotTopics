@@ -314,12 +314,12 @@ def vote():
     post = Posts.query.get(post_id)
     
     if post:
-        if vote:
-            return jsonify(action='alreadyvoted')
+        #if vote:
+        #   return jsonify(action='alreadyvoted')
 
         vote = Votes(user_id=current_user.id, post=post_id, choice=choice)
         db.session.add(vote)
-        
+
         if choice == 1:
             post.votes_1 = post.votes_1 + 1
         elif choice == 2:
@@ -333,6 +333,7 @@ def vote():
         db.session.commit()
 
         percentages = roundedPercentages(post)
+        print(percentages)
         return jsonify(action='voted', percentages=percentages)
     else:
         return jsonify(action='error')

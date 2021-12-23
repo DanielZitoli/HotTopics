@@ -89,13 +89,29 @@
                 </div>
                 <h2 class="post-content">{{content}}</h2>
                 <div class="post-choices">
-                    <button value=1 class="post-choice">{{choice_1}}</button>
-                    <button value=2 class="post-choice">{{choice_2}}</button>
+                    <button value=1 class="post-choice">
+                        <h4 class='choice-text'>{{choice_1}}</h4>
+                        <div class="choice-percentage-bar"></div>
+                        <h5 class="choice-percentage"></h5>
+                    </button>
+                    <button value=2 class="post-choice">
+                        <h4 class='choice-text'>{{choice_2}}</h4>
+                        <div class="choice-percentage-bar"></div>
+                        <h5 class="choice-percentage"></h5>
+                    </button>
                     {{#if choice_3}}
-                    <button value=3 class="post-choice">{{choice_3}}</button>
+                    <button value=3 class="post-choice">
+                        <h4 class='choice-text'>{{choice_3}}</h4>
+                        <div class="choice-percentage-bar"></div>
+                        <h5 class="choice-percentage"></h5>
+                    </button>
                     {{/if}}
                     {{#if choice_4}}
-                    <button value=4 class="post-choice">{{choice_4}}</button>
+                    <button value=4 class="post-choice">
+                        <h4 class='choice-text'>{{choice_4}}</h4>
+                        <div class="choice-percentage-bar"></div>
+                        <h5 class="choice-percentage"></h5>
+                    </button>
                     {{/if}}
                 </div>
                 <div class="post-footer">

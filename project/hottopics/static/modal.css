@@ -3,7 +3,7 @@
 }
 
 .modal-main{
-    background-color: #222222;
+    background-color: #222228;
     border-radius: calc(var(--page-width)*0.05);
     box-shadow: 6px 6px 15px black;
     display: grid;

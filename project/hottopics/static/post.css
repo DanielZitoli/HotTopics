@@ -88,17 +88,21 @@
     border: 1px solid #444;
     color: #fff;
     position: relative;
+    align-content: flex-start;
+    display: flex;
 }
 .choice-text{
-    text-align: left;
+    position: relative;
     font-size: calc(var(--page-width)*0.03); 
-    margin: 0;
-    float: left;
-    z-index: 100;
+    display: inline;
+    vertical-align: middle;
+    margin: auto 0;
+    z-index: 10;
 }
 
 .post-choice:hover{
-    background-color: #222228;
+    background-color: #444452;
+    z-index: 500;
 }
 
 .post-choice:active {
@@ -179,6 +183,7 @@
     float: right;
     margin: 2% 4% 0 0;
     display: none;
+    z-index: 10;
 } 
 
 .choice-percentage-bar{
@@ -187,9 +192,22 @@
     position: absolute;
     left: 0;
     top: 0;
-    background-color: grey;
-    opacity: 0.7;
+    background-color: #222228;
     overflow: hidden;
     border-radius: calc(var(--page-width)*.018);
     pointer-events: none;
+    z-index: 1;
+}
+
+.checkmark{
+    height: calc(var(--page-width)*0.045);
+    width: calc(var(--page-width)*0.045);
+    font-size: calc(var(--page-width)*0.045);
+    margin: calc(var(--page-width)*0.01); 
+
+    background-color: transparent;
+    color: white;
+    display: inline !important;
+    float: left;
+    z-index: 10;
 }
