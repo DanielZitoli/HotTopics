@@ -1,4 +1,5 @@
 from operator import pos
+import re
 import secrets
 import os
 from PIL import Image
@@ -11,7 +12,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime, timedelta
 
 from hottopics import app, db
-from hottopics.models import Users, Posts, Comments, Favourites, Follows
+from hottopics.models import Users, Posts, Comments, Favourites, Follows, Votes
 from hottopics.forms import Registration, LoginForm, UpdateAccount, CreatePost
 from hottopics.helpers import display_date
 
@@ -183,6 +184,8 @@ def loadMorePosts():
             return jsonify(error='noposts')
         posts = Posts.query.join(Favourites, Posts.id==Favourites.post).filter(Posts.id.in_(favouriteIDs)).order_by(Favourites.date_added.desc()).paginate(per_page=10, page=pageNum)
     elif contentType == 'account':
+        if accountUsername == 'settings':
+            return jsonify(error='invalidContentType')
         user = Users.query.filter_by(username=accountUsername).first()
         if not user.posts:
             if current_user == user:
@@ -191,7 +194,7 @@ def loadMorePosts():
                 return jsonify(error='noposts', ownAccount=False)
         posts = Posts.query.filter_by(user_id=user.id).order_by(Posts.posted.desc()).paginate(per_page=10, page=pageNum)
     else:
-        return jsonify(error='invalid content type')
+        return jsonify(error='invalidContentType')
 
     lastPage = True if posts.page == posts.pages else False
     ownAccount = True if current_user.username == accountUsername else False
@@ -224,19 +227,29 @@ def time_since(date):
     days = difference.days
     if days >= 365:
         years = int(round(days/365, 0))
+        if years == 1:
+            return "1 year ago"
         return f"{years} years ago"
     if days >= 30:
         months = int(round(days/30, 0))
+        if months == 1:
+            return "1 month ago"
         return f"{months} months ago"
     if days >= 7:
         weeks = int(round(days/7, 0))
+        if weeks == 1:
+            return "1 week ago"
         return f"{weeks} weeks ago"
     if days:
+        if days == 1:
+            return "1 day ago"
         return f"{days} days ago"
 
     seconds = difference.seconds
     if seconds >= 3600:
         hours = int(round(seconds/3600, 0))
+        if hours == 1:
+            return "1 hour ago"
         return f"{hours} hours ago"
     if seconds >= 100:
         mins = int(round(seconds/60, 0))
@@ -291,6 +304,71 @@ def follow():
             return jsonify(action='follow')
     else:
         return jsonify(action='error')
+
+@app.route("/api/vote", methods=["PUT"])
+@login_required
+def vote():
+    post_id = request.form.get("post_id")
+    choice = int(request.form.get("choice", int))
+    vote = Votes.query.filter_by(user_id=current_user.id).filter_by(post=post_id).first()
+    post = Posts.query.get(post_id)
+    
+    if post:
+        if vote:
+            return jsonify(action='alreadyvoted')
+
+        vote = Votes(user_id=current_user.id, post=post_id, choice=choice)
+        db.session.add(vote)
+        
+        if choice == 1:
+            post.votes_1 = post.votes_1 + 1
+        elif choice == 2:
+            post.votes_2 = post.votes_2 + 1
+        elif choice == 3:
+            post.votes_3 = post.votes_3 + 1
+        elif choice == 4:
+            post.votes_4 = post.votes_4 + 1
+        else:
+            return jsonify(action='error')
+        db.session.commit()
+
+        percentages = roundedPercentages(post)
+        return jsonify(action='voted', percentages=percentages)
+    else:
+        return jsonify(action='error')
+
+def roundedPercentages(post):
+    votes = [post.votes_1, post.votes_2]
+    if post.choice_3:
+        votes.append(post.votes_3)
+    if post.choice_4:
+        votes.append(post.votes_4)
+    sum = post.total_votes()
+    percentages = []
+    for i in range(0, len(votes)):
+        percentages.append([i+1, int((votes[i]/sum*100)//1), (votes[i]/sum)%1])
+    sum = 0
+    for percentage in percentages:
+        sum += percentage[1]
+    leftover = 100 - sum
+    percentages.sort(key=lambda percentage:percentage[2], reverse=True)
+    for i in range(leftover):
+        percentages[i][1]+=1
+    percentages.sort(key=lambda percentage:percentage[0])
+    values = []
+    for a,b,c in percentages:
+        values.append(b)
+    return values
+
+@app.route("/api/votedPosts")
+@login_required
+def votedPosts():
+    votes = Votes.query.filter_by(user_id=current_user.id).all()
+    posts={}
+    for vote in votes:
+        posts[vote.post] = vote.choice
+    return jsonify(posts=posts)
+    
 
 
 def create_tests():

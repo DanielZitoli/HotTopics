@@ -11,7 +11,19 @@ $(document).ready(function(){
         var postTemplate = Handlebars.compile(templateScript.innerHTML) 
     }
 
-    LoadMorePosts()
+    var votedPosts
+    $.ajax({
+        url: '/api/votedPosts',
+        type: "GET",
+        DataType: "json",
+        data: {},
+        success: function(data){
+            votedPosts = data.posts
+            LoadMorePosts()
+        } 
+    })
+
+    
 
     $('main').scroll(function(e){
         if ($('#loadMore').offset().top < 1200 && readyToLoad){
@@ -34,6 +46,7 @@ $(document).ready(function(){
 
             success: function(data){
                 if (data.error){
+                    if (data.error == 'invalidContentType'){return}
                     if (data.error == 'noposts'){
                         if (contentType == 'home'){
                             response = 'Oops, something went wrong!'
@@ -67,8 +80,28 @@ $(document).ready(function(){
 
 
     //Vote Post AJAX
-    $("main").on('click', '.post-choice', function(){
-        console.log(document.referrer)
+    $("main").on('click', '.post-choice', function(e){
+        var choice = $(this).val()
+        var post_id = $(this).parents('.post-container').attr('id')
+        $.ajax({
+            url: '/api/vote',
+            type: "PUT",
+            DataType: "json",
+            data: {'post_id': post_id, "choice": choice},
+
+            success: function(response){
+                var choice_buttons = $(e.target).parent().children() 
+                percentages = response.percentages
+                console.log(choice_buttons)
+                for (let i = 0; i < choice_buttons.length; i++){
+                    
+                    $(choice_buttons[i]).children('.choice-percentage').text(percentages[i]+'%').fadeIn(100, 'linear')
+                    $(choice_buttons[i]).children('.choice-percentage-bar').css('transition', 'width '+percentages[i]/100+'s').css('width', percentages[i]+'%') 
+
+                }
+
+            }
+        }); 
     });
 
 
