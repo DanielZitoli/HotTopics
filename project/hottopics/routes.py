@@ -154,6 +154,10 @@ def create_post():
     elif request.method == "GET":  
         return render_template('create_post.html', title="Create Post", PostForm=PostForm)
 
+@app.route("/search")
+@login_required
+def search():
+    return render_template('search.html', title="Search")
 
 """
 @app.route("/account/<username>/followers")
@@ -177,6 +181,8 @@ def loadMorePosts():
 
     if contentType == 'home':
         posts = Posts.query.order_by(Posts.posted.desc()).paginate(per_page=10, page=pageNum)
+        if not posts.items:
+            return jsonify(error='noposts')
     elif contentType == 'following':
         follows = Follows.query.filter_by(follower=current_user.id).all()
         followIDs = []
@@ -404,7 +410,7 @@ def roundedPercentages(post):
 
 def displayNumbers(number):
     if number > 100000:
-        return str(int(round(number/1000, 0))) + 'K'
+        return str(int(round(number/1000, 1))) + 'K'
     if number > 10000:
         return str(round(number/1000, 1)) + 'K'
     if number > 1000:

@@ -47,15 +47,16 @@ $(document).ready(function(){
                             if (data.ownAccount){
                                 response = 'Create your own post for it to show here!'
                             }else{
-                                response = 'This account has no posts'
+                                response = 'No Posts'
                             }
                         }
                     } else if (data.error == 'notfollowing'){
                         response = "You're not following any accounts"
                     }
-                    $(".post-response").text(response)
+                    $(".post-response").text(response).show()
                     return
                 }
+                if (!data.posts){return}
     
                 data.posts.forEach(function(postData, i) {
                     var post = postTemplate(postData)
@@ -188,10 +189,14 @@ $(document).ready(function(){
             success: function(response){
                 if (response.action==='error') {return} 
               
+                var followerCount = $('.follower-count')
+                followers = Number(followerCount.html())
                 if ($followButton.html().trim() === "Follow"){
                     $followButton.html("Following")
+                    if (followers || followers==0) {followerCount.html(followers + 1)}
                 } else {
                     $followButton.html("Follow")
+                    if (followers || followers==0) {followerCount.html(followers - 1)}
                 }
 
                 $followButton.toggleClass('account-following')

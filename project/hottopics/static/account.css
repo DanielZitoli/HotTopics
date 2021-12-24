@@ -1,5 +1,5 @@
 .account-header{
-    margin: 2.5% auto;
+    margin: 2.5% auto 0;
     width: 95%;
     background-color: var(--second-background);
     border: 1px solid #444;
@@ -93,4 +93,9 @@
 .account-unfollow{
     background-color: var(--danger);
     color: black;
+}
+
+.account-post-title{
+    text-align: center;
+    font-size: calc(var(--page-width)*0.08);
 }

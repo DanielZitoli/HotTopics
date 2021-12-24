@@ -164,7 +164,13 @@
 }
 
 .post-response{
-    font-size: calc(var(--page-width)*0.05)
+    font-size: calc(var(--page-width)*0.05);
+    width: calc(var(--page-width)*0.7);
+    height: calc(var(--page-width)*0.4);
+    color: #a1a1a1;
+    margin: 10% auto;
+    text-align: center;
+    display: none;
 }
 
 #loadMore{

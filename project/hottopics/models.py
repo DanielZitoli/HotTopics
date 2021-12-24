@@ -9,7 +9,7 @@ def load_user(user_id):
 
 class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), nullable=False)
+    username = db.Column(db.Text(), nullable=False)
     email = db.Column(db.Text())
     hash = db.Column(db.Text(), nullable=False)
     followers = db.Column(db.Integer, default=0) 
