@@ -6,7 +6,7 @@
 }
 
 .form-group{
-    margin-bottom: 5%;
+    margin-bottom: calc(var(--page-width)*0.02);
 }
 
 .form-legend{

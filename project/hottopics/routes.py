@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 
 from hottopics import app, db
 from hottopics.models import Users, Posts, Comments, Favourites, Follows, Votes
-from hottopics.forms import Registration, LoginForm, UpdateAccount, CreatePost
+from hottopics.forms import Registration, LoginForm, UpdateAccount, CreatePost, PasswordChange
 from hottopics.helpers import display_date
 
 
@@ -76,9 +76,6 @@ def home():
 def following():
     return render_template("home.html", title="Following")
 
-def get_time(post):
-    return post.posted
-
 @app.route("/favourites")
 @login_required
 def favourites():
@@ -89,13 +86,20 @@ def favourites():
 def account(username):
     user = Users.query.filter_by(username = username).first()
     follow = Follows.query.filter_by(follower=current_user.id, following=user.id).first()
+    total_votes, post_count = 0, 0
+    for post in user.posts:
+        total_votes += post.total_votes()
+        post_count += 1
+    
+    stats = [displayNumbers(post_count), displayNumbers(total_votes), displayNumbers(user.followers), displayNumbers(user.following)]
    
-    return render_template('account.html', title="Account", user=user, follow=follow, date_joined=display_date(user.joined))
+    return render_template('account.html', title="Account", user=user, stats=stats, follow=follow, date_joined=display_date(user.joined))
 
 @app.route("/account/settings", methods=["GET", "POST"])
 @login_required
 def settings():
     settingsForm = UpdateAccount()
+    passwordForm = PasswordChange()
     if settingsForm.validate_on_submit():
         if settingsForm.picture.data:
             picture_file = save_picture(settingsForm.picture.data)
@@ -106,10 +110,18 @@ def settings():
         current_user.email = settingsForm.email.data
         db.session.commit()
         return redirect("/account/" + current_user.username)
+    if passwordForm.validate_on_submit():
+        if check_password_hash(current_user.hash, passwordForm.new_password.data):
+            newHash = generate_password_hash(passwordForm.new_password.data)
+            current_user.hash = newHash
+            db.session.commit()
+            return redirect(url_for('account', username=current_user.username))
+        else: 
+            flash('Wrong Password', 'danger')
     elif request.method == "GET":
         settingsForm.username.data = current_user.username
         settingsForm.email.data = current_user.email
-    return render_template('settings.html', settingsForm=settingsForm)
+    return render_template('settings.html', settingsForm=settingsForm, passwordForm=passwordForm)
 
 def save_picture(picture):
     random_hex = secrets.token_hex(8)
@@ -216,7 +228,9 @@ def loadMorePosts():
         post = post.as_dict()
         post["author_username"] = author.username
         post["author_image"] = author.image_file
-        post["total_votes"] = total_votes
+        post["total_votes"] = displayNumbers(total_votes)
+        post["likes"] = displayNumbers(post["likes"])
+        post["comment_count"] = displayNumbers(post["comment_count"])
         post["is_liked"] = post['id'] in liked_posts
         post["time_since"] = time_ago
         post["percentages"] = percentages
@@ -278,7 +292,7 @@ def like():
         else:
             like = Favourites(user_id=current_user.id, post=post_id)
             db.session.add(like)
-            post.likes = post.likes + 1
+            post.likes = post.likes + 1456
             db.session.commit()
             return jsonify(action='liked')
     else:
@@ -316,29 +330,49 @@ def vote():
     choice = int(request.form.get("choice", int))
     vote = Votes.query.filter_by(user_id=current_user.id).filter_by(post=post_id).first()
     post = Posts.query.get(post_id)
-    
     if post:
         if vote:
-            return jsonify(action='alreadyvoted')
-
-        vote = Votes(user_id=current_user.id, post=post_id, choice=choice)
-        db.session.add(vote)
-
-        if choice == 1:
-            post.votes_1 = post.votes_1 + 1
-        elif choice == 2:
-            post.votes_2 = post.votes_2 + 1
-        elif choice == 3:
-            post.votes_3 = post.votes_3 + 1
-        elif choice == 4:
-            post.votes_4 = post.votes_4 + 1
+            lastVote = vote.choice
+            if lastVote == choice:
+                return jsonify(action="alreadyvoted")
+            if lastVote == 1:
+                post.votes_1 = post.votes_1 - 1
+            elif lastVote == 2:
+                post.votes_2 = post.votes_2 - 1
+            elif lastVote == 3:
+                post.votes_3 = post.votes_3 - 1
+            elif lastVote == 4:
+                post.votes_4 = post.votes_4 - 1
+            else:
+                return jsonify(action='error')
+            if choice == 1:
+                post.votes_1 = post.votes_1 + 1
+            elif choice == 2:
+                post.votes_2 = post.votes_2 + 1
+            elif choice == 3:
+                post.votes_3 = post.votes_3 + 1
+            elif choice == 4:
+                post.votes_4 = post.votes_4 + 1
+            else:
+                return jsonify(action='error')
+            vote.choice = choice
+            db.session.commit()
+            return jsonify(action='voted', percentages=roundedPercentages(post), alreadyVoted=True, lastVote=lastVote)
         else:
-            return jsonify(action='error')
-        db.session.commit()
-
-        percentages = roundedPercentages(post)
-        print(percentages)
-        return jsonify(action='voted', percentages=percentages)
+            vote = Votes(user_id=current_user.id, post=post_id, choice=choice)
+            db.session.add(vote)
+            if choice == 1:
+                post.votes_1 = post.votes_1 + 1
+            elif choice == 2:
+                post.votes_2 = post.votes_2 + 1
+            elif choice == 3:
+                post.votes_3 = post.votes_3 + 1
+            elif choice == 4:
+                post.votes_4 = post.votes_4 + 1
+            else:
+                return jsonify(action='error')
+            db.session.commit()
+            return jsonify(action='voted', percentages=roundedPercentages(post), alreadyVoted=False)
     else:
         return jsonify(action='error')
 
@@ -368,15 +402,15 @@ def roundedPercentages(post):
         values.append(b)
     return values
 
-@app.route("/api/votedPosts")
-@login_required
-def votedPosts():
-    votes = Votes.query.filter_by(user_id=current_user.id).all()
-    posts={}
-    for vote in votes:
-        posts[vote.post] = {'choice': vote.choice, 'percentages': roundedPercentages(Posts.query.get(vote.post))}
-    return jsonify(posts=posts)
-    
+def displayNumbers(number):
+    if number > 100000:
+        return str(int(round(number/1000, 0))) + 'K'
+    if number > 10000:
+        return str(round(number/1000, 1)) + 'K'
+    if number > 1000:
+        return str(round(number/1000, 1)) + 'K'
+    return number
+
 
 
 def create_tests():

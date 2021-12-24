@@ -9,8 +9,8 @@ from hottopics.models import Users
 class Registration(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()]) 
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=5)])
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password'), Length(min=5)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password'), Length(min=6)])
     submit = SubmitField('Sign Up')
 
     def validate_username(self, username):
@@ -48,6 +48,11 @@ class UpdateAccount(FlaskForm):
             if user:
                 raise ValidationError("That email is already in use.")
 
+class PasswordChange(FlaskForm):
+    password = PasswordField('Current Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('new_password')])
+    submit = SubmitField('Change Password')
 
 class CreatePost(FlaskForm):
     content = TextAreaField('Post Content', validators=[DataRequired(), Length(max=80)])

@@ -70,9 +70,7 @@ $(document).ready(function(){
                         for (let i = 0; i < choice_buttons.length; i++){
                             if (choice==i+1){
                                 var $text = $(choice_buttons[i]).children('.choice-text')[0]
-                                var $span = $('<span>').addClass('voted-icon')
                                 var $i = $('<i>').addClass('checkmark material-icons').html('done')
-                                $span.append($i)
                                 $text.after($i[0])
                             }
                             $(choice_buttons[i]).children('.choice-percentage').text(percentages[i]+'%').show()
@@ -103,12 +101,13 @@ $(document).ready(function(){
                 } else if (response.action=='voted'){
                     var choice_buttons = $(e.target).parent().children() 
                     percentages = response.percentages
+                    if (response.alreadyVoted){
+                        $($(choice_buttons[response.lastVote-1]).children('.checkmark')[0]).remove()
+                    }
                     for (let i = 0; i < choice_buttons.length; i++){
                         if (choice==i+1){
                             var $text = $(choice_buttons[i]).children('.choice-text')[0]
-                            var $span = $('<span>').addClass('voted-icon')
                             var $i = $('<i>').addClass('checkmark material-icons').html('done')
-                            $span.append($i)
                             $text.after($i[0])
                         }
                         $(choice_buttons[i]).children('.choice-percentage').text(percentages[i]+'%').fadeIn(100, 'linear')
@@ -134,13 +133,13 @@ $(document).ready(function(){
             success: function(response){
                 if (response.action==='error') {return} 
 
-                likes = parseInt(like_count.html())
+                likes = Number(like_count.html())
                 if (response.action === 'liked'){
                     icon.html('favorite')
-                    if (typeof(likes) == 'number') {like_count.html(likes + 1)}
+                    if (likes || likes==0) {like_count.html(likes + 1)}
                 } else if (response.action === 'unliked'){
                     icon.html('favorite_border')
-                    if (typeof(likes) === 'number') {like_count.html(likes - 1)}
+                    if (likes || likes==0) {like_count.html(likes - 1)}
                 }
             }
         });
