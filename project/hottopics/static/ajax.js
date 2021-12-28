@@ -47,7 +47,7 @@ $(document).ready(function(){
                             if (data.ownAccount){
                                 response = 'Create your own post for it to show here!'
                             }else{
-                                response = 'No Posts'
+                                response = 'This user has no posts'
                             }
                         }
                     } else if (data.error == 'notfollowing'){
@@ -222,4 +222,57 @@ $(document).ready(function(){
         }
     });
 
+    //Search Logic
+    var searchType = 'users'
+    var searchBar = $('#searchBar')
+
+    searchBar.keyup(function(){
+        searchString = searchBar.val()
+        if (searchString){
+            $.ajax({
+                url: '/api/search',
+                type: "POST",
+                DataType: "json",
+                data: {'searchType': searchType, 'searchString': searchString},
+
+                success: function(data){
+                    console.log(data)
+                }
+            })
+        }
+    });
+
+    $(".searchType").click(function(){
+        if (this.id == 'searchUsers'){
+            searchType = 'users'
+            searchBar[0].placeholder = 'Search for users...'
+        }else if (this.id == 'searchPosts'){
+            searchType = 'posts'
+            searchBar[0].placeholder = 'Search for posts...'
+        }
+        $("#searchUsers").toggleClass('searchType-active')
+        $("#searchPosts").toggleClass('searchType-active')
+    });
+
+    //create users
+    $('.doesntexist').click(function(){
+        $.ajax({
+            url: '/static/usernames.js',
+            type: 'GET',
+            DataType: "json",
+
+            success: function(data){
+                $.ajax({
+                    url: '/api/createUsers',
+                    type: 'POST',
+                    DataType: "json",
+                    data: {'data': data},
+
+                    success: function(response){
+                        console.log(response.action)
+                    }
+                })
+            } 
+        })
+    })
 });

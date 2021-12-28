@@ -1,5 +1,30 @@
 {% extends 'layout-home.html' %}
 
 {% block main %}
-    <input id="searchBar" type="text" class="form-text">
+<div class="searchPage">
+    <div class="searchHead">
+        <div class="searchBar">
+            <button class="searchIcon">
+                <i class="material-icons searchLogo">search</i>
+            </button>
+            <input id="searchBar" type="text" class="search-text" autocomplete=off autocapitalize="off" placeholder="Search for users...">
+        </div>
+        <div class="searchCategories">
+            <div id="searchUsers" class="searchType searchType-active">
+                <i class="searchTypeIcon material-icons">people</i>
+                <h4 class="searchTypeTitle">Accounts</h4>
+            </div>
+            <div id="searchPosts" class="searchType create_users">
+                <i class="searchTypeIcon material-icons">chat</i>
+                <h4 class="searchTypeTitle">Posts</h4>
+            </div>
+        </div>
+    </div>
+    <div class="searchBody">
+        
+    </div>
+</div>
+
+    
+    
 {% endblock %}

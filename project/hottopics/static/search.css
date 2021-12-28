@@ -1,0 +1,117 @@
+.searchPage{
+    display: grid;
+    grid-template-rows: calc(var(--page-width)*0.25) 1fr;
+    min-height: 100vw;
+}
+
+.searchHead{
+    position: relative;
+    border-bottom: 1px solid #444;
+}
+
+.searchBar{
+    width: 80%;
+    height: calc(var(--page-width)*.1);
+    border-radius: calc(var(--page-width)*.05);
+    color: white;
+    border: solid #ddd 1px;
+    padding: 0;
+    margin: 3% auto;
+    outline: none;
+    background-color: var(--second-background);
+    display: grid;
+    grid-template-columns: calc(var(--page-width)*0.1) 1fr;
+}
+
+.searchBar:focus-within{
+    border: solid rgb(255, 92, 92) 2px;
+    box-shadow: 2px 2px 14px #000;
+}
+
+.search-text{
+    width: 95%;
+    height: calc(var(--page-width)*.08);
+    color: white;
+    font-size: calc(var(--page-width)*.04); 
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: auto auto auto 0;
+    outline: none;
+}
+
+.searchIcon{
+    text-decoration: none;
+    border: none;
+    padding: 0;
+    margin: auto;
+    outline: none;
+    border-radius: calc(var(--page-width)*.04);
+    width: calc(var(--page-width)*.08);
+    height: calc(var(--page-width)*.08);
+    font-size: calc(var(--page-width)*0.05);
+    background-color: transparent;
+    color: white;
+}
+
+.searchLogo{
+    height: calc(var(--page-width)*0.07);
+    width: calc(var(--page-width)*0.07);
+    font-size: calc(var(--page-width)*0.06);
+    margin: calc(var(--page-width)*0.01); 
+}
+
+.searchCategories{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: calc(var(--page-width)*0.1);
+    display: flex;
+    justify-content: center;
+}
+
+.searchType{
+    height: calc(var(--page-width)*0.08);
+    width: calc(var(--page-width)*0.25);
+    border-radius: calc(var(--page-width)*0.04);
+    border: solid white 1px;
+    display: flex;
+    margin: auto calc(var(--page-width)*0.02);
+    justify-content: center;
+}
+
+.searchTypeIcon{
+    font-size: calc(var(--page-width)*0.04);
+    margin: auto calc(var(--page-width)*0.005);
+}
+
+.searchTypeTitle{
+    font-size: calc(var(--page-width)*0.04);
+    margin: auto calc(var(--page-width)*0.005);
+}
+
+.searchType-active{
+    border-color: var(--primary);
+    transition: all .3s;
+}
+
+@media screen and (max-width: 660px) { 
+    .searchPage{
+        grid-template-rows: calc(var(--page-width)*0.3) 1fr; 
+    }
+    .searchCategories{
+        height: calc(var(--page-width)*0.15);
+    } 
+    
+    .searchType{
+        height: calc(var(--page-width)*0.1);
+        border-radius: calc(var(--page-width)*0.05);
+    }
+    .searchBar{
+        height: calc(var(--page-width)*.12);
+        border-radius: calc(var(--page-width)*.06);
+    }
+    .search-text{
+        font-size: calc(var(--page-width)*.05); 
+    }
+}

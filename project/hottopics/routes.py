@@ -3,7 +3,7 @@ import re
 import secrets
 import os
 from PIL import Image
-from flask import redirect, render_template, request, flash, jsonify, abort
+from flask import json, redirect, render_template, request, flash, jsonify, abort
 from flask.helpers import url_for
 from sqlalchemy.orm import query
 from sqlalchemy.orm.session import Session
@@ -417,6 +417,40 @@ def displayNumbers(number):
         return str(round(number/1000, 1)) + 'K'
     return number
 
+@app.route("/api/search", methods=["POST"])
+@login_required
+def searchResults():
+    searchType = request.form.get("searchType")
+    searchString = request.form.get("searchString")
+
+    if searchType == 'users':
+        users = Users.query.filter(Users.username.ilike(searchString+'%')).limit(10).all()
+        print(users)
+        results = [] 
+        for user in users:
+            result = {}
+            result['username'] = user.username
+            result['profile_image'] = user.image_file
+            results.append(result)
+
+          
+
+        return jsonify(results=results)
+
+    if searchType == 'posts':
+        return
+
+@app.route("/api/createUsers", methods=["POST"])
+@login_required
+def createUsers():
+    data = request.form.get('data')
+    dictionary = json.loads(data)
+    usernames = []
+    for row in dictionary:
+        usernames.append(row['username'])
+
+    create_users(usernames)
+    return jsonify(action='success')
 
 
 def create_tests():
@@ -430,5 +464,12 @@ def create_tests():
     db.session.add(post1)
     db.session.add(post2)
     db.session.add(post3)
+    db.session.commit()
+    return
+
+def create_users(usernames):
+    for username1 in usernames:
+        user = Users(username=username1, email="Test1@rogers.com", hash="jhvytresdckhcjh")
+        db.session.add(user)
     db.session.commit()
     return

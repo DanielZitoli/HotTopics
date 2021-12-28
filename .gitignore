@@ -2,3 +2,4 @@
 project_env/
 flask_session/
 __pycache__/
+usernames.js
