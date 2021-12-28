@@ -20,11 +20,42 @@
             </div>
         </div>
     </div>
-    <div class="searchBody">
-        
-    </div>
+    <div class="searchBody"></div>
 </div>
 
-    
-    
+<script id="UsersSearch-template" type="text/x-handlebars-template">
+    {% raw %}
+        <div class="searchResults">
+            <div class="searchUser">
+                <div class="searchpfpSection">
+                    <img src="static/profile_pics/{{profile_image}}" alt="profile picture" class="searchProfilePic-user">
+                </div>
+                <div class="searchUserInfo">
+                    <h3 class="searchUsername-user">{{username}}</h3>
+                    <h4 class="searchFollowers">Followers: {{followers}}</h4>
+                </div>
+            </div>
+        </div>
+    {% endraw %}
+</script>
+<script id="PostsSearch-template" type="text/x-handlebars-template">
+    {% raw %}
+        <div class="searchResults">
+            <div class="searchPost">
+                <div class="postSearchHead">
+                    <img src="static/profile_pics/{{profile_image}}" alt="profile picture" class="searchProfilePic-post">
+                    <h3 class="searchUsername-post">{{username}}</h3>
+                </div>
+                <div class="postSearchContent">
+                    <h2 class="postSearchText">{{content}}</h2>
+                </div>
+                <div class="postSearchFooter">
+                    <h4 class="postSearchstats">Votes: {{votes}}</h4>
+                    <h4 class="postSearchstats">Likes: {{likes}}</h4>
+                </div>
+            </div>
+        </div>
+    {% endraw %}
+</script>
+
 {% endblock %}

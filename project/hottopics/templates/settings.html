@@ -2,7 +2,7 @@
 
 {% block main %}
     <form action="" method="POST" enctype="multipart/form-data" class="container-form" autocomplete="off" autofill="off">
-        {{ settingsForm.hidden_tag() }}
+        {{ settingsForm.csrf_token(id="csrfSettings") }}
         <fieldset>
             <legend class="form-legend">Account Info</legend>
             <div class="form-group">
@@ -46,12 +46,12 @@
         </fieldset>
 
         <div class="form-group">
-            {{ settingsForm.submit(class="multi-button form-button") }}
+            {{ settingsForm.submit(class="multi-button form-button", id="settingsSubmit") }}
         </div> 
     </form>
 
     <form action="" method="POST" enctype="multipart/form-data" class="container-form" autocomplete="off" autofill="off">
-        {{ passwordForm.hidden_tag() }}
+        {{ passwordForm.csrf_token(id="csrfPassword") }}
         <fieldset>
             <legend class="form-legend">Password Change</legend>
             <div class="form-group">
@@ -99,7 +99,7 @@
         </fieldset>
 
         <div class="form-group">
-            {{ passwordForm.submit(class="multi-button form-button") }}
+            {{ passwordForm.submit(class="multi-button form-button", id="passwordSubmit") }}
         </div> 
     </form>
 

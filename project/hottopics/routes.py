@@ -1,7 +1,6 @@
-from operator import pos
-import re
 import secrets
 import os
+import random
 from PIL import Image
 from flask import json, redirect, render_template, request, flash, jsonify, abort
 from flask.helpers import url_for
@@ -424,21 +423,42 @@ def searchResults():
     searchString = request.form.get("searchString")
 
     if searchType == 'users':
-        users = Users.query.filter(Users.username.ilike(searchString+'%')).limit(10).all()
-        print(users)
+        users = Users.query.filter(Users.username.ilike(searchString+'%')).order_by(Users.followers.desc()).limit(15).all()
+        if len(users) == 15:
+            results = [] 
+            for user in users:
+                result = {}
+                result['username'] = user.username
+                result['profile_image'] = user.image_file
+                result['followers'] = displayNumbers(user.followers)
+                results.append(result)
+            return jsonify(results=results)
+        wildusers = Users.query.filter(Users.username.ilike('%'+searchString+'%')).order_by(Users.followers.desc()).limit(15-len(users)).all() 
         results = [] 
-        for user in users:
+        for user in users+wildusers:
             result = {}
             result['username'] = user.username
             result['profile_image'] = user.image_file
+            result['followers'] = displayNumbers(user.followers)
             results.append(result)
-
-          
-
-        return jsonify(results=results)
+        if results:
+            return jsonify(results=results)
+        return jsonify(results='noposts')
 
     if searchType == 'posts':
-        return
+        posts = Posts.query.filter(Posts.content.ilike('%'+searchString+'%')).order_by(Posts.likes.desc()).limit(10).all()
+        results = [] 
+        for post in posts:
+            result = {}
+            result['username'] = post.author.username
+            result['profile_image'] = post.author.image_file
+            result['content'] = post.content
+            result['likes'] = displayNumbers(post.likes)
+            result['votes'] = displayNumbers(post.total_votes())
+            results.append(result)
+        if results:
+            return jsonify(results=results)
+        return jsonify(results='noposts')
 
 @app.route("/api/createUsers", methods=["POST"])
 @login_required
@@ -471,5 +491,12 @@ def create_users(usernames):
     for username1 in usernames:
         user = Users(username=username1, email="Test1@rogers.com", hash="jhvytresdckhcjh")
         db.session.add(user)
+    db.session.commit()
+    return
+
+def assign_followers():
+    users = Users.query.all()
+    for user in users:
+        user.followers = random.randint(10, 20000)
     db.session.commit()
     return

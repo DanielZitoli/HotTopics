@@ -15,10 +15,12 @@ $(document).ready(function(){
     
 
     $('main').scroll(function(e){
-        if ($('#loadMore').offset().top < 1200 && readyToLoad){
-            pageNum++
-            readyToLoad = false
-            LoadMorePosts()
+        if($('#loadMore')[0]){
+            if ($('#loadMore').offset().top < 1200 && readyToLoad){
+                pageNum++
+                readyToLoad = false
+                LoadMorePosts()
+            }
         }
     });
 
@@ -226,8 +228,22 @@ $(document).ready(function(){
     var searchType = 'users'
     var searchBar = $('#searchBar')
 
-    searchBar.keyup(function(){
-        searchString = searchBar.val()
+    if (contentType == 'search'){
+        var UsersSearchScript = document.querySelector('#UsersSearch-template')
+        if (UsersSearchScript){
+            var usersTemplate = Handlebars.compile(UsersSearchScript.innerHTML) 
+        } 
+        var PostsSearchScript = document.querySelector('#PostsSearch-template')
+        if (UsersSearchScript){
+            var postSearchTemplate = Handlebars.compile(PostsSearchScript.innerHTML) 
+        } 
+    }
+
+    searchBar.keyup(searchAPI)
+
+    function searchAPI(){
+        var searchBody = $('.searchBody')
+        var searchString = searchBar.val()
         if (searchString){
             $.ajax({
                 url: '/api/search',
@@ -236,11 +252,31 @@ $(document).ready(function(){
                 data: {'searchType': searchType, 'searchString': searchString},
 
                 success: function(data){
-                    console.log(data)
+                    searchBody.empty()
+                    console.log(data.results)
+                    if (data.results=='noposts'){
+                        console.log('hi')
+                        var noresults = $('<h3>').addClass('noresults').html('No Results')
+                        searchBody.append(noresults)
+                        return
+                    }
+                    if (searchType == 'users'){
+                        data.results.forEach(function(user, i){
+                            var User = usersTemplate(user)
+                            searchBody.append(User) 
+                        })
+                    } else if (searchType == 'posts'){
+                        data.results.forEach(function(post, i) {
+                            var Post = postSearchTemplate(post)
+                            searchBody.append(Post)  
+                        })
+                    }
                 }
             })
+        } else {
+            searchBody.empty()
         }
-    });
+    }
 
     $(".searchType").click(function(){
         if (this.id == 'searchUsers'){
@@ -250,6 +286,7 @@ $(document).ready(function(){
             searchType = 'posts'
             searchBar[0].placeholder = 'Search for posts...'
         }
+        searchAPI()
         $("#searchUsers").toggleClass('searchType-active')
         $("#searchPosts").toggleClass('searchType-active')
     });

@@ -95,6 +95,101 @@
     transition: all .3s;
 }
 
+.searchBody{
+    align-content: center;
+    overflow-y: scroll;
+}
+
+.searchResults{
+    width: 100%;
+}
+
+.searchResults:hover{
+    background-color: #292929;
+}
+
+.searchUser{
+    width: 80%;
+    margin: 0 auto;
+    height: calc(var(--page-width)*0.14);
+    display: grid;
+    grid-template-columns: calc(var(--page-width)*0.14) 1fr;
+}
+
+.searchProfilePic-user{
+    width: calc(var(--page-width) * 0.1);
+    height: calc(var(--page-width) * 0.1);
+    border-radius: calc(var(--page-width) * 0.05);
+    margin: calc(var(--page-width) * 0.02); 
+    user-select: none;
+}
+
+.searchUsername-user{
+    font-size: calc(var(--page-width) * 0.04);
+    color: white;
+    margin: 0;
+    margin-top: calc(var(--page-width) * 0.02);
+}
+
+.searchFollowers{
+    font-size: calc(var(--page-width) * 0.03);
+    color: #747474;
+    margin: 0;
+}
+
+.searchPost{
+    width: 80%;
+    margin: 0 auto;
+}
+
+.postSearchHead{
+    width: 100%;
+    height: calc(var(--page-width) * 0.08);
+    display: flex;
+}
+
+.searchProfilePic-post{
+    width: calc(var(--page-width) * 0.06);
+    height: calc(var(--page-width) * 0.06);
+    border-radius: calc(var(--page-width) * 0.03);
+    margin: calc(var(--page-width) * 0.01); 
+    margin-left: 0;
+    user-select: none;
+}
+
+.searchUsername-post{
+    font-size: calc(var(--page-width) * 0.045);
+    color: white;
+    margin: auto 1% auto;
+}
+
+.postSearchContent{
+    width: 100%;
+}
+
+.postSearchText{
+    font-size: calc(var(--page-width) * 0.04);
+    margin-bottom: 1%;
+}
+
+.postSearchFooter{
+    width: 100%;
+    height: calc(var(--page-width) * 0.06);
+    display: flex; 
+}
+.postSearchstats{
+    color: #747474;
+    margin: 0 3% 0 0;
+    font-size: calc(var(--page-width) * 0.04);
+}
+
+.noresults{
+    font-size: calc(var(--page-width) * 0.06);
+    margin: calc(var(--page-width) * 0.02) auto;
+}
+
+
+
 @media screen and (max-width: 660px) { 
     .searchPage{
         grid-template-rows: calc(var(--page-width)*0.3) 1fr; 
