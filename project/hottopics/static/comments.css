@@ -1,0 +1,111 @@
+.postComment{
+    display: none;
+    width: 80%;
+    margin: 2% auto 2%;
+}
+
+.comment-text{
+    width: 70%;
+    height: calc(var(--page-width)*.15);
+    border-radius: calc(var(--page-width)*.03);
+    color: white;
+    font-size: calc(var(--page-width)*.04);
+    border: solid #ddd 1px;
+    padding: 0;
+    margin: 0;
+    padding: 0 3%;
+    outline: none;
+    background-color: var(--second-background);
+    resize: none;
+}
+
+.comment-text:focus{
+    transform: scale(0.99); 
+    border: solid #ff5c5c 2px;
+    box-shadow: 2px 2px 14px #000;
+}
+
+.commentButton{
+    width: calc(var(--page-width)*.2);
+    font-size: calc(var(--page-width)*.035);
+ 
+}
+
+#commentSection{
+    width: 100%;
+}
+
+.commentContainer{
+    width: 100%;
+    margin: auto;
+    padding: 0 2.5%;
+    display: grid;
+    grid-template-columns: calc(var(--page-width)*.13) 1fr;
+    border-top: 1px solid #444;
+    position: relative;
+}
+
+.commentPfp{
+    width: calc(var(--page-width)*.1); 
+    height: calc(var(--page-width)*.1);
+    margin: calc(var(--page-width)*.02) calc(var(--page-width)*.015) calc(var(--page-width)*.01);
+    border-radius: calc(var(--page-width)*.05);
+    user-select: none;
+}
+
+.commentHeader{
+    width: 100%;
+    height: calc(var(--page-width)*.06); 
+    margin-top: calc(var(--page-width)*.01); 
+    display: flex;
+}
+
+.comment-username{
+    margin: auto 0;
+    font-size: calc(var(--page-width)*.035);
+}
+
+.comment-posted{
+    margin: auto 2%;
+    font-size: calc(var(--page-width)*.03);
+    color: rgb(112, 115, 121);
+}
+
+.comment-content{
+    font-size: calc(var(--page-width)*.03); 
+    margin: 0;
+    overflow-wrap: normal;
+}
+
+.comment-likes{
+    display: flex;
+    width: calc(var(--page-width)*.15); 
+    height: calc(var(--page-width)*.08);
+    user-select: none;
+}
+
+.comment-heart{
+    font-size: calc(var(--page-width)*.05);
+    margin: calc(var(--page-width)*.015) 0;
+}
+
+.comment-stats{
+    height: calc(var(--page-width)*0.08);
+    font-size: calc(var(--page-width)*0.03);
+    line-height: calc(var(--page-width)*0.08);
+    margin: 0 calc(var(--page-width)*.015);
+}
+
+.deleteComment{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: calc(var(--page-width)*.05);
+    border-radius: 70%;
+    padding: calc(var(--page-width)*.0125);
+    margin: calc(var(--page-width)*.0125);
+    user-select: none;
+}
+.deleteComment:hover{
+    background-color: #1b1b1b;
+}

@@ -7,7 +7,7 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from hottopics.models import Users
 
 class Registration(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20), Regexp('^\w+$')])
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=16), Regexp('^\w+$')])
     email = StringField('Email', validators=[DataRequired(), Email()]) 
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password'), Length(min=6)])
@@ -31,7 +31,7 @@ class LoginForm(FlaskForm):
 
 
 class UpdateAccount(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=16)])
     email = StringField('Email', validators=[DataRequired(), Email()]) 
     picture = FileField("Update Profile Picture", validators=[FileAllowed(["jpg", "jpeg", "png"])])
     submit = SubmitField('Update account')
@@ -55,9 +55,11 @@ class PasswordChange(FlaskForm):
     submit = SubmitField('Change Password')
 
 class CreatePost(FlaskForm):
-    content = TextAreaField('Post Content', validators=[DataRequired(), Length(max=80)])
-    choice_1 = StringField('Choice #1', validators=[DataRequired(), Length(max=20)])
-    choice_2 = StringField('Choice #2', validators=[DataRequired(), Length(max=20)])
-    choice_3 = StringField('Choice #3', validators=[Length(max=20)])
-    choice_4 = StringField('Choice #4', validators=[Length(max=20)])
+    content = TextAreaField('Post Content', validators=[DataRequired(), Length(max=150)])
+    choice_1 = StringField('Choice #1', validators=[DataRequired(), Length(max=40)])
+    choice_2 = StringField('Choice #2', validators=[DataRequired(), Length(max=40)])
+    choice_3 = StringField('Choice #3', validators=[Length(max=40)])
+    choice_4 = StringField('Choice #4', validators=[Length(max=40)])
     submit = SubmitField('Create Post') 
+
+ 

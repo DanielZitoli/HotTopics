@@ -5,7 +5,9 @@ from PIL import Image
 from flask import json, redirect, render_template, request, flash, jsonify, abort
 from flask.helpers import url_for
 from sqlalchemy.orm import query
+from sqlalchemy.orm import session
 from sqlalchemy.orm.session import Session
+from werkzeug.datastructures import ContentRange
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime, timedelta
@@ -80,6 +82,16 @@ def following():
 def favourites():
     return render_template("home.html", title="Favourites")
 
+@app.route("/post/<post_id>")
+@login_required
+def post(post_id):
+    if not post_id:
+        abort(400)
+    post = Posts.query.get(post_id)
+    if not post:
+        abort(404)
+    return render_template("post.html", title="Post")
+
 @app.route("/account/<username>")
 @login_required
 def account(username):
@@ -150,26 +162,12 @@ def create_post():
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('home'))
-    elif request.method == "GET":  
-        return render_template('create_post.html', title="Create Post", PostForm=PostForm)
+    return render_template('create_post.html', title="Create Post", PostForm=PostForm)
 
 @app.route("/search")
 @login_required
 def search():
     return render_template('search.html', title="Search")
-
-"""
-@app.route("/account/<username>/followers")
-@login_required
-def account(username):
-    return
-
-@app.route("/account/<username>/following")
-@login_required
-def account(username):
-    return
-"""
-
 
 @app.route("/api/loadMorePosts", methods=["GET", "POST"])
 @login_required
@@ -190,7 +188,7 @@ def loadMorePosts():
         if not followIDs:
             return jsonify(error='notfollowing')
         posts = Posts.query.filter(Posts.user_id.in_(followIDs)).order_by(Posts.posted.desc()).paginate(per_page=10, page=pageNum)
-        if not posts:
+        if not posts.items:
             return jsonify(error='noposts')
     elif contentType == 'favourites':
         favourites = current_user.favourites
@@ -210,6 +208,47 @@ def loadMorePosts():
             else:
                 return jsonify(error='noposts', ownAccount=False)
         posts = Posts.query.filter_by(user_id=user.id).order_by(Posts.posted.desc()).paginate(per_page=10, page=pageNum)
+    elif contentType == 'post':
+        post = None
+        if pageNum == 1:
+            post = Posts.query.get(accountUsername)
+            if not post: 
+                abort(404)
+            liked_posts = []
+            liked = current_user.favourites
+            for like in liked:
+                liked_posts.append(like.post)
+            author = post.author
+            total_votes = post.total_votes()
+            time_ago = time_since(post.posted)
+            percentages = roundedPercentages(post)
+            vote = Votes.query.filter_by(user_id=current_user.id, post=post.id).first()
+            post = post.as_dict()
+            post["author_username"] = author.username
+            post["author_image"] = author.image_file
+            post["total_votes"] = displayNumbers(total_votes)
+            post["likes"] = displayNumbers(post["likes"])
+            post["comment_count"] = displayNumbers(post["comment_count"])
+            post["is_liked"] = post['id'] in liked_posts
+            post["time_since"] = time_ago
+            post["percentages"] = percentages
+            post["choice"] = vote.choice if vote else False
+
+        comments = Comments.query.filter_by(post_id=accountUsername).order_by(Comments.likes.desc()).paginate(per_page=10, page=pageNum)
+        jsonComments = []
+        for comment in comments.items:
+            commentInfo = {}
+            commentInfo['id'] = comment.id
+            commentInfo['content'] = comment.content
+            commentInfo['likes'] = displayNumbers(comment.likes)
+            commentInfo['posted'] = time_since(comment.posted)
+            commentInfo['username'] = comment.author.username
+            commentInfo['author_image'] = comment.author.image_file
+            commentInfo['ownComment'] = True if comment.author == current_user else False
+            jsonComments.append(commentInfo)
+        lastPage = True if comments.page == comments.pages else False
+        
+        return jsonify(post=post, comments=jsonComments, lastPage=lastPage)
     else:
         return jsonify(error='invalidContentType')
 
@@ -433,7 +472,12 @@ def searchResults():
                 result['followers'] = displayNumbers(user.followers)
                 results.append(result)
             return jsonify(results=results)
-        wildusers = Users.query.filter(Users.username.ilike('%'+searchString+'%')).order_by(Users.followers.desc()).limit(15-len(users)).all() 
+
+        prevusers_ids = []
+        for user in users:
+            prevusers_ids.append(user.id)
+
+        wildusers = Users.query.filter(Users.username.ilike('%'+searchString+'%'), Users.id.notin_(prevusers_ids)).order_by(Users.followers.desc()).limit(15-len(users)).all() 
         results = [] 
         for user in users+wildusers:
             result = {}
@@ -459,6 +503,52 @@ def searchResults():
         if results:
             return jsonify(results=results)
         return jsonify(results='noposts')
+
+@app.route("/api/delete_post", methods=["DELETE"])
+@login_required
+def deletePost():
+    post_id = request.form.get('post_id')
+    if not post_id:
+        abort(400)
+    post = Posts.query.get(post_id)
+    if not post:
+        return jsonify(action='nopost')
+    if not post.author == current_user:
+        abort(403)
+    #db.session.delete(post)
+    #db.session.commit()
+    return jsonify(action='deleted')
+
+@app.route("/api/comment", methods=["POST"])
+@login_required
+def comment():
+    reset_db()
+    post_id = request.form.get('post_id')
+    content = request.form.get('content')
+    if not post_id:
+        abort(400)
+    post = Posts.query.get(post_id)
+    if not post:
+        return jsonify(action='error')
+    comment = Comments(user_id=current_user.id, post_id=post_id, content=content)
+    db.session.add(comment)
+    db.session.commit()
+
+    commentInfo = {}
+    commentInfo['id'] = comment.id
+    commentInfo['content'] = comment.content
+    commentInfo['likes'] = displayNumbers(comment.likes)
+    commentInfo['posted'] = time_since(comment.posted)
+    commentInfo['username'] = current_user.username
+    commentInfo['author_image'] = current_user.image_file
+    return jsonify(action='succesful', comment=commentInfo)
+ 
+
+
+
+
+
+
 
 @app.route("/api/createUsers", methods=["POST"])
 @login_required
@@ -499,4 +589,24 @@ def assign_followers():
     for user in users:
         user.followers = random.randint(10, 20000)
     db.session.commit()
+    return
+
+def reset_db():
+    users = Users.query.all()
+    posts = Posts.query.all()
+    comments = Comments.query.all()
+
+    db.drop_all()
+
+    db.create_all()
+
+    for post in posts:
+        db.session.add(post)
+    for user in users:
+        db.session.add(user)
+    for comment in comments:
+        db.session.add(comment)
+    db.session.commit()
+    print('done')
+    print(Users.query.get(1))
     return

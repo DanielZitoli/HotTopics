@@ -1,7 +1,24 @@
 {% extends 'layout-home.html' %}
 
 {% block main %}
-
+    {% if user==current_user %}
+    <div class="modal fade" id="deletePostModal" tabindex="-1" role="dialog" aria-labelledby="deletePostModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-main modal-content">
+                <div class="my-modal-header">
+                    <h3 class="modal-title" id="deletePostModalLabel">Delete Post</h3>
+                </div>
+                <div class="my-modal-body">
+                    Are you sure you want to delete this post?
+                </div>
+                <div class="my-modal-footer">
+                    <button type="button" class="modal-button modal-button-white" data-dismiss="modal">Cancel</button>
+                    <button id="deletePostButton" type="button" class="modal-button modal-button-red" data-dismiss="modal">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {%else%}
     <div class="modal fade" id="unfollowModal" tabindex="-1" role="dialog" aria-labelledby="unfollowModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-main modal-content">
@@ -18,6 +35,7 @@
             </div>
         </div>
     </div>
+    {%endif%}
 
     <div class="account-header">
         <img class="rounded-circle account-img" src="{{ url_for('static', filename = 'profile_pics/' + user.image_file) }}">
@@ -46,7 +64,7 @@
                 <h2 class="stat-title">
                     <b>Posts</b>
                 </h2>
-                <h3 class="stat-number">
+                <h3 class="stat-number totalPostCount">
                     {{stats[0]}}
                 </h3>
             </div>
@@ -76,11 +94,7 @@
             </div>
         </div>
     </div>
-
-    <div class="account-post-title">
-        {{user.username}}'s Posts
-    </div>
-
+    
     <div class="post-response" style="margin-top: 0;">
 
     </div>
@@ -129,7 +143,7 @@
                     </div>
                     <div class="post-stats">
                         <span class="icon"><i class="material-icons post-icon">done</i></span>
-                        <h5 class="post-stats-stat">{{total_votes}}</h5> 
+                        <h5 id="totalVoteCount" class="post-stats-stat">{{total_votes}}</h5> 
                     </div>
                     <div class="post-stats post-like">
                         <span class="icon"><i class="material-icons post-icon">favorite{{#unless is_liked}}_border{{/unless}}</i></span>

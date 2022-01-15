@@ -1,13 +1,35 @@
 {% extends 'layout-home.html' %}
 
 {% block main %}
-    <h1 class="main-title">
-        {{ title }}
-    </h1>
 
-    <div class="post-response">
-        
+    <div class="postComment">
+        <textarea id="CommentInput" type="text" class="comment-text" autocomplete=off autocapitalize="off"></textarea>
+        <button id="commentButton" class="multi-button commentButton">Comment</button>
     </div>
+
+    <div id="commentSection">
+        <div class="commentContainer">
+            <div class="commentPfp-section">
+                <img src="/static/profile_pics/default.jpeg" alt="profile picture" class="commentPfp">
+            </div>
+            <div class="comment-main">
+                <div class="commentHeader">
+                    <h3 class="comment-username"><b>DanielZitoli</b></h3>
+                    <h4 class="comment-posted">2 weeks ago</h4>
+                </div>
+                <h5 class="comment-content">Go follow CCMikayla22@tiktok.com, alsokj    hg qwcgqic wc gwcq c  cgwc bkbkbkhfjuwygcuqw cucqwc vcu wcgwc adc</h5>
+                <div class="comment-likes">
+                    <i class="material-icons comment-heart">favorite_border</i>
+                    <h5 class="comment-stats">25.7K</h5>
+                </div>
+                <i class="deleteComment material-icons">delete</i>
+            </div>
+        </div>
+    </div>
+
+    <button id="loadMore" class="multi-button">
+        Load More
+    </button>
 
     <script id="post-template" type="text/x-handlebars-template">
         {% raw %}
@@ -64,7 +86,20 @@
         {% endraw %}
     </script>
 
-    <button id="loadMore" class="multi-button">
-        Load More
-    </button>
+    <script id="comment-template" type="text/x-handlebars-template">
+        {% raw %}
+            <div id="Comment-{{id}}" class="commentContainer">
+                <div class="commentPfp-section">
+                    <img src="/static/profile_pics/{{author_image}}" alt="profile picture" class="commentPfp">
+                </div>
+                <div class="comment-main">
+                    <div class="commentHeader">
+                        <h3 class="comment-username"><b>{{username}}</b></h3>
+                        <h4 class="comment-posted">{{posted}}</h4>
+                    </div>
+                    <h5 class="comment-content">{{content}}</h5>
+                </div>
+            </div>
+        {% endraw %}
+    </script>
 {% endblock %}

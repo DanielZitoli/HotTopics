@@ -11,6 +11,11 @@ $(document).ready(function(){
         var postTemplate = Handlebars.compile(templateScript.innerHTML) 
     }
 
+    var commentScript = document.querySelector('#comment-template')
+    if (commentScript){
+        var commentTemplate = Handlebars.compile(commentScript.innerHTML) 
+    }
+
     LoadMorePosts()
     
 
@@ -58,17 +63,44 @@ $(document).ready(function(){
                     $(".post-response").text(response).show()
                     return
                 }
-                if (!data.posts){return}
-    
-                data.posts.forEach(function(postData, i) {
-                    var post = postTemplate(postData)
-                    $('#loadMore').before(post)
-                    
-                    choice = postData.choice
-                    if (choice){
+                if (data.posts){
+                    data.posts.forEach(function(postData, i) {
+                        var post = postTemplate(postData)
+                        $('#loadMore').before(post)
+                        
+                        choice = postData.choice
                         post = document.getElementById(postData.id)
+                        if (choice){
+                            choice_buttons = $(post).children('.post-choices').children() 
+                            percentages = postData.percentages
+                        
+                            for (let i = 0; i < choice_buttons.length; i++){
+                                if (choice==i+1){
+                                    var $text = $(choice_buttons[i]).children('.choice-text')[0]
+                                    var $i = $('<i>').addClass('checkmark material-icons').html('done')
+                                    $text.after($i[0])
+                                }
+                                $(choice_buttons[i]).children('.choice-percentage').text(percentages[i]+'%').show()
+                                $(choice_buttons[i]).children('.choice-percentage-bar').css('width', percentages[i]+'%')
+                            }
+                        }
+                        if (data.ownAccount && contentType=='account'){
+                            var $deletePost = $('<i>').addClass('deletePost material-icons').html('delete')
+                            $(post).append($deletePost)
+                        }
+                    });
+                }
+                if (data.post){
+                    var post = postTemplate(data.post)
+                    $('.postComment').before(post).show()
+                    $('#CommentInput')[0].placeholder = "Comment on " + data.post.author_username + "'s post"
+
+                    
+                    choice = data.post.choice
+                    post = document.getElementById(data.post.id)
+                    if (choice){
                         choice_buttons = $(post).children('.post-choices').children() 
-                        percentages = postData.percentages
+                        percentages = data.post.percentages
                     
                         for (let i = 0; i < choice_buttons.length; i++){
                             if (choice==i+1){
@@ -79,8 +111,18 @@ $(document).ready(function(){
                             $(choice_buttons[i]).children('.choice-percentage').text(percentages[i]+'%').show()
                             $(choice_buttons[i]).children('.choice-percentage-bar').css('width', percentages[i]+'%')
                         }
-                    }
-                });
+                    } 
+                }
+                if (data.comments){
+                    data.comments.forEach(function(commentData, i){
+                        var comment = commentTemplate(commentData)
+                        $('#commentSection').append(comment)
+                        //add ability to delete comment
+                        comment = document.getElementById("Comment-"+commentData.id)
+                        //console.log(comment)
+
+                    });
+                }
 
                 readyToLoad = data.lastPage? false : true;
             } 
@@ -91,6 +133,7 @@ $(document).ready(function(){
     //Vote AJAX
     $("main").on('click', '.post-choice', function(e){
         var choice = $(this).val()
+        var postContainer = $(this).parents('.post-container') 
         var post_id = $(this).parents('.post-container').attr('id')
         $.ajax({
             url: '/api/vote',
@@ -102,10 +145,15 @@ $(document).ready(function(){
                 if (response.action=='alreadyvoted'){
                     return
                 } else if (response.action=='voted'){
-                    var choice_buttons = $(e.target).parent().children() 
+                    
+                    var choice_buttons = $(e.target).closest('.post-choices').children() 
                     percentages = response.percentages
                     if (response.alreadyVoted){
                         $($(choice_buttons[response.lastVote-1]).children('.checkmark')[0]).remove()
+                    }else{
+                        var vote_count = postContainer.find('#totalVoteCount')
+                        votes = Number(vote_count.html())
+                        if (votes || votes==0) {vote_count.html(votes + 1)} 
                     }
                     for (let i = 0; i < choice_buttons.length; i++){
                         if (choice==i+1){
@@ -253,9 +301,7 @@ $(document).ready(function(){
 
                 success: function(data){
                     searchBody.empty()
-                    console.log(data.results)
                     if (data.results=='noposts'){
-                        console.log('hi')
                         var noresults = $('<h3>').addClass('noresults').html('No Results')
                         searchBody.append(noresults)
                         return
@@ -290,6 +336,66 @@ $(document).ready(function(){
         $("#searchUsers").toggleClass('searchType-active')
         $("#searchPosts").toggleClass('searchType-active')
     });
+
+
+    //Delete Post API
+    $('main').on('click', '.deletePost', function(e){
+        $('#deletePostModal').modal('show')
+        $('#deletePostButton')[0].value = $(e.target).closest('.post-container')[0].id 
+    });
+
+    $('#deletePostButton').click(function(e){
+        var post_id = $(e.target).val()
+        $.ajax({
+            url: '/api/delete_post',
+            type: "DELETE",
+            DataType: "json",
+            data: {'post_id': post_id},
+
+            success: function(data){
+                if (data.action == 'deleted'){
+                    $('#'+post_id).remove()
+
+                    var post_count = $('.totalPostCount')
+                    posts = Number(post_count.html())
+                    if (posts || posts==0) {post_count.html(posts - 1)} 
+                } 
+            }
+        })
+    })
+
+
+    $("#commentButton").click(function(){
+        commentContent = $("#CommentInput").val().trim()
+        post_id = window.location.pathname.split('/')[2] 
+        console.log(post_id)
+        if(commentContent){
+            $.ajax({
+                url: '/api/comment',
+                type: "POST",
+                DataType: "json",
+                data: {'post_id': post_id, "content": commentContent},
+
+                success: function(response){
+                    if(response.action == 'succesful'){
+                    console.log($("#CommentInput").val().trim())
+                    $("#CommentInput")[0].value = ""
+                    var comment = commentTemplate(response.comment)
+                    $('#commentSection').prepend(comment) 
+                    } else if (response.action == 'error'){
+                        return
+                    }
+                }
+
+            })
+        }
+
+    });
+
+
+
+
+
 
     //create users
     $('.doesntexist').click(function(){

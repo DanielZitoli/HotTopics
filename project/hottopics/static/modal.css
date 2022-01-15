@@ -1,5 +1,5 @@
 .modal{
-    position: absolute;
+    top: 20vh;
 }
 
 .modal-main{
@@ -7,9 +7,9 @@
     border-radius: calc(var(--page-width)*0.05);
     box-shadow: 6px 6px 15px black;
     display: grid;
-    grid-template-rows: 20% 50% 30%;
+    grid-template-rows: 20% 45% 35%;
     width: calc(var(--page-width)*0.65);
-    height: calc(var(--page-width)*0.4);
+    height: calc(var(--page-width)*0.35);
     margin: auto;
 }
 
@@ -32,6 +32,7 @@
     margin: auto;
 }
 .my-modal-body{
+    width: 80%;
     text-align: center;
     color: rgb(139, 139, 139);
     margin: auto;
@@ -40,12 +41,9 @@
 
 .my-modal-footer{
     text-align: center;
-    position: relative;
-    align-content: space-around;
 }
 
 .modal-button{
-    position: absolute;
     text-decoration: none !important;
     border: none;
     padding: 0;
@@ -54,6 +52,8 @@
     height: calc(var(--page-width)*0.08);
     width: calc(var(--page-width)*0.2);
     font-size: calc(var(--page-width)*0.03);
+    margin: auto calc(var(--page-width)*0.02);
+
 }
 
 .modal-button:hover{
@@ -93,23 +93,10 @@
     border: 1px solid var(--primary);
 }
 
-.button-left{
-    position: absolute;
-    left: calc(var(--page-width)*0.08);
-    top: calc(var(--page-width)*0.01);
-}
-
-.button-right{
-    position: absolute;
-    right: calc(var(--page-width)*0.08);
-    top: calc(var(--page-width)*0.01);
-}
-
 @media screen and (max-width: 660px) {
     .modal-main{
-        width: calc(var(--page-width)*0.75);
-        height: calc(var(--page-width)*0.5);
+        width: calc(var(--page-width)*0.7);
+        height: calc(var(--page-width)*0.35);
     }
-    
     
 }

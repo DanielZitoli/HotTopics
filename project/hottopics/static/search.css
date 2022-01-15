@@ -41,11 +41,11 @@
 }
 
 .searchIcon{
-    text-decoration: none;
+    text-decoration: none !important;
     border: none;
     padding: 0;
     margin: auto;
-    outline: none;
+    outline: none !important;
     border-radius: calc(var(--page-width)*.04);
     width: calc(var(--page-width)*.08);
     height: calc(var(--page-width)*.08);
