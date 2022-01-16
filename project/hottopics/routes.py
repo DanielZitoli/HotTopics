@@ -1,6 +1,7 @@
 import secrets
 import os
 import random
+from typing import Type
 from PIL import Image
 from flask import json, redirect, render_template, request, flash, jsonify, abort
 from flask.helpers import url_for
@@ -13,7 +14,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime, timedelta
 
 from hottopics import app, db
-from hottopics.models import Users, Posts, Comments, Favourites, Follows, Votes
+from hottopics.models import Users, Posts, Comments, Favourites, CommentLikes, Follows, Votes
 from hottopics.forms import Registration, LoginForm, UpdateAccount, CreatePost, PasswordChange
 from hottopics.helpers import display_date
 
@@ -235,6 +236,9 @@ def loadMorePosts():
             post["choice"] = vote.choice if vote else False
 
         comments = Comments.query.filter_by(post_id=accountUsername).order_by(Comments.likes.desc()).paginate(per_page=10, page=pageNum)
+        liked_comments = []
+        for like in CommentLikes.query.filter_by(user_id=current_user.id):
+            liked_comments.append(like.comment)
         jsonComments = []
         for comment in comments.items:
             commentInfo = {}
@@ -244,6 +248,7 @@ def loadMorePosts():
             commentInfo['posted'] = time_since(comment.posted)
             commentInfo['username'] = comment.author.username
             commentInfo['author_image'] = comment.author.image_file
+            commentInfo["is_liked"] = comment.id in liked_comments
             commentInfo['ownComment'] = True if comment.author == current_user else False
             jsonComments.append(commentInfo)
         lastPage = True if comments.page == comments.pages else False
@@ -324,7 +329,10 @@ def time_since(date):
 @app.route("/api/like", methods=["PUT"])
 @login_required
 def like():
-    post_id = request.form.get("post_id")
+    post_id = request.form.get("post_id", type=int)
+    if not type(post_id) is int:
+        return jsonify(action='error')
+
     like = Favourites.query.filter_by(user_id=current_user.id).filter_by(post=post_id).first()
     post = Posts.query.get(post_id)
     if post:
@@ -336,7 +344,31 @@ def like():
         else:
             like = Favourites(user_id=current_user.id, post=post_id)
             db.session.add(like)
-            post.likes = post.likes + 1456
+            post.likes = post.likes + 1
+            db.session.commit()
+            return jsonify(action='liked')
+    else:
+        return jsonify(action='error')
+
+@app.route("/api/likeComment", methods=["PUT"])
+@login_required
+def likeComment():
+    comment_id = request.form.get("comment_id", type=int)
+    if not type(comment_id) is int:
+        return jsonify(action='error')
+
+    like = CommentLikes.query.filter_by(user_id=current_user.id).filter_by(comment=comment_id).first()
+    comment = Comments.query.get(comment_id)
+    if comment:
+        if like:
+            db.session.delete(like)
+            comment.likes = comment.likes - 1
+            db.session.commit()
+            return jsonify(action='unliked')
+        else:
+            like = CommentLikes(user_id=current_user.id, comment=comment_id)
+            db.session.add(like)
+            comment.likes = comment.likes + 1
             db.session.commit()
             return jsonify(action='liked')
     else:
@@ -519,10 +551,26 @@ def deletePost():
     #db.session.commit()
     return jsonify(action='deleted')
 
+@app.route("/api/delete_comment", methods=["DELETE"])
+@login_required
+def deleteComment():
+    comment_id = request.form.get('comment_id')
+    if not comment_id:
+        abort(400)
+    comment = Comments.query.get(comment_id)
+    if not comment:
+        return jsonify(action='nocomment')
+    if not comment.author == current_user:
+        abort(403)
+    db.session.delete(comment)
+    post = Posts.query.get(comment.post_id)
+    post.comment_count -= 1
+    db.session.commit()
+    return jsonify(action='deleted')
+
 @app.route("/api/comment", methods=["POST"])
 @login_required
 def comment():
-    reset_db()
     post_id = request.form.get('post_id')
     content = request.form.get('content')
     if not post_id:
@@ -532,6 +580,7 @@ def comment():
         return jsonify(action='error')
     comment = Comments(user_id=current_user.id, post_id=post_id, content=content)
     db.session.add(comment)
+    post.comment_count += 1
     db.session.commit()
 
     commentInfo = {}
@@ -541,6 +590,8 @@ def comment():
     commentInfo['posted'] = time_since(comment.posted)
     commentInfo['username'] = current_user.username
     commentInfo['author_image'] = current_user.image_file
+    commentInfo['ownComment'] = True
+    commentInfo['is_liked'] = False
     return jsonify(action='succesful', comment=commentInfo)
  
 
@@ -589,24 +640,4 @@ def assign_followers():
     for user in users:
         user.followers = random.randint(10, 20000)
     db.session.commit()
-    return
-
-def reset_db():
-    users = Users.query.all()
-    posts = Posts.query.all()
-    comments = Comments.query.all()
-
-    db.drop_all()
-
-    db.create_all()
-
-    for post in posts:
-        db.session.add(post)
-    for user in users:
-        db.session.add(user)
-    for comment in comments:
-        db.session.add(comment)
-    db.session.commit()
-    print('done')
-    print(Users.query.get(1))
     return

@@ -122,6 +122,7 @@
 
 .post-stats{
     display: flex;
+    color: white;
     align-content: center;
     justify-content: center;
     border-radius: calc(var(--page-width)*0.04);

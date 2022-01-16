@@ -117,9 +117,6 @@ $(document).ready(function(){
                     data.comments.forEach(function(commentData, i){
                         var comment = commentTemplate(commentData)
                         $('#commentSection').append(comment)
-                        //add ability to delete comment
-                        comment = document.getElementById("Comment-"+commentData.id)
-                        //console.log(comment)
 
                     });
                 }
@@ -129,6 +126,11 @@ $(document).ready(function(){
         })
     };
 
+    //Redirect to Post Route
+    $('main').on('click', '.commentButtonLink', function(e){
+        post_id = $(this).parents('.post-container').attr('id')
+        window.location.href = '/post/'+ post_id
+    });
 
     //Vote AJAX
     $("main").on('click', '.post-choice', function(e){
@@ -195,6 +197,33 @@ $(document).ready(function(){
             }
         });
     });
+
+    //Like Comment AJAX
+    $("main").on('click', ".comment-likes", function(){
+        var like_count = $(this).find('h5')
+        var icon = $(this).find('i')
+        var id = parseInt($(this).parents('.commentContainer').attr('id'))
+        $.ajax({
+            url: '/api/likeComment',
+            type: "PUT",
+            DataType: "json",
+            data: {'comment_id': id},
+
+            success: function(response){
+                if (response.action==='error') {return} 
+
+                likes = Number(like_count.html())
+                if (response.action === 'liked'){
+                    icon.html('favorite')
+                    if (likes || likes==0) {like_count.html(likes + 1)}
+                } else if (response.action === 'unliked'){
+                    icon.html('favorite_border')
+                    if (likes || likes==0) {like_count.html(likes - 1)}
+                }
+            }
+        });
+    });
+
 
     //Follow/Unfollow AJAX
     $('#unfollowButton').click(FollowAPI)
@@ -270,6 +299,11 @@ $(document).ready(function(){
             $stat.toggleClass('like-hover')
             $icon.toggleClass('icon-like-hover')
         }
+    });
+
+    $("main").on("mouseenter mouseleave", ".comment-likes", function(e){
+        var $stat = $(e.currentTarget)
+        $stat.toggleClass('like-hover')
     });
 
     //Search Logic
@@ -364,11 +398,37 @@ $(document).ready(function(){
         })
     })
 
+    //Delete Comments
+    $('main').on('click', '.deleteComment', function(e){
+        $('#deleteCommentModal').modal('show')
+        $('#deleteCommentButton')[0].value = parseInt($(e.target).closest('.commentContainer')[0].id)
+    });
 
+    $('#deleteCommentButton').click(function(e){
+        var comment_id = $(e.target).val()
+        $.ajax({
+            url: '/api/delete_comment',
+            type: "DELETE",
+            DataType: "json",
+            data: {'comment_id': comment_id},
+
+            success: function(data){
+                if (data.action == 'deleted'){
+                    $('#'+comment_id+'-Comment').remove()
+
+                    comment_count = $('.post-comment').find('.post-stats-stat')
+                    comments = Number(comment_count.html())
+                    if (comments || comments==0) {comment_count.html(comments - 1)} 
+                } 
+            }
+        })
+    })
+
+
+    //Post Comments
     $("#commentButton").click(function(){
         commentContent = $("#CommentInput").val().trim()
         post_id = window.location.pathname.split('/')[2] 
-        console.log(post_id)
         if(commentContent){
             $.ajax({
                 url: '/api/comment',
@@ -378,10 +438,14 @@ $(document).ready(function(){
 
                 success: function(response){
                     if(response.action == 'succesful'){
-                    console.log($("#CommentInput").val().trim())
                     $("#CommentInput")[0].value = ""
                     var comment = commentTemplate(response.comment)
                     $('#commentSection').prepend(comment) 
+
+                    comment_count = $('.post-comment').find('.post-stats-stat')
+                    comments = Number(comment_count.html())
+                    if (comments || comments==0) {comment_count.html(comments + 1)} 
+
                     } else if (response.action == 'error'){
                         return
                     }
@@ -389,7 +453,6 @@ $(document).ready(function(){
 
             })
         }
-
     });
 
 

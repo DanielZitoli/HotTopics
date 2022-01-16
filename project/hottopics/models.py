@@ -63,6 +63,11 @@ class Favourites(db.Model):
     post = db.Column(db.Integer)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
+class CommentLikes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    comment = db.Column(db.Integer) 
+
 class Votes(db.Model):
     id = db.Column(db.Integer, primary_key=True) 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))

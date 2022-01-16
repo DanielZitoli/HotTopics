@@ -1,31 +1,29 @@
 {% extends 'layout-home.html' %}
 
 {% block main %}
+    <div class="modal fade" id="deleteCommentModal" tabindex="-1" role="dialog" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-main modal-content">
+                <div class="my-modal-header">
+                    <h3 class="modal-title" id="deleteCommentModalLabel">Delete Comment</h3>
+                </div>
+                <div class="my-modal-body">
+                    Are you sure you want to delete this comment?
+                </div>
+                <div class="my-modal-footer">
+                    <button type="button" class="modal-button modal-button-white" data-dismiss="modal">Cancel</button>
+                    <button id="deleteCommentButton" type="button" class="modal-button modal-button-red" data-dismiss="modal">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="postComment">
         <textarea id="CommentInput" type="text" class="comment-text" autocomplete=off autocapitalize="off"></textarea>
         <button id="commentButton" class="multi-button commentButton">Comment</button>
     </div>
 
-    <div id="commentSection">
-        <div class="commentContainer">
-            <div class="commentPfp-section">
-                <img src="/static/profile_pics/default.jpeg" alt="profile picture" class="commentPfp">
-            </div>
-            <div class="comment-main">
-                <div class="commentHeader">
-                    <h3 class="comment-username"><b>DanielZitoli</b></h3>
-                    <h4 class="comment-posted">2 weeks ago</h4>
-                </div>
-                <h5 class="comment-content">Go follow CCMikayla22@tiktok.com, alsokj    hg qwcgqic wc gwcq c  cgwc bkbkbkhfjuwygcuqw cucqwc vcu wcgwc adc</h5>
-                <div class="comment-likes">
-                    <i class="material-icons comment-heart">favorite_border</i>
-                    <h5 class="comment-stats">25.7K</h5>
-                </div>
-                <i class="deleteComment material-icons">delete</i>
-            </div>
-        </div>
-    </div>
+    <div id="commentSection"></div>
 
     <button id="loadMore" class="multi-button">
         Load More
@@ -88,7 +86,7 @@
 
     <script id="comment-template" type="text/x-handlebars-template">
         {% raw %}
-            <div id="Comment-{{id}}" class="commentContainer">
+            <div id="{{id}}-Comment" class="commentContainer">
                 <div class="commentPfp-section">
                     <img src="/static/profile_pics/{{author_image}}" alt="profile picture" class="commentPfp">
                 </div>
@@ -98,6 +96,11 @@
                         <h4 class="comment-posted">{{posted}}</h4>
                     </div>
                     <h5 class="comment-content">{{content}}</h5>
+                    <div class="comment-likes">
+                        <i class="material-icons comment-heart">favorite{{#unless is_liked}}_border{{/unless}}</i>
+                        <h5 class="comment-stats">{{likes}}</h5>
+                    </div>
+                    {{#if ownComment}}<i class="deleteComment material-icons">delete</i>{{/if}}
                 </div>
             </div>
         {% endraw %}
