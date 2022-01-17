@@ -185,7 +185,8 @@
 
 .noresults{
     font-size: calc(var(--page-width) * 0.06);
-    margin: calc(var(--page-width) * 0.02) auto;
+    margin: calc(var(--page-width) * 0.03) auto;
+    text-align: center;
 }
 
 
@@ -208,5 +209,8 @@
     }
     .search-text{
         font-size: calc(var(--page-width)*.05); 
+    }
+    noresults{
+        font-size: calc(var(--page-width) * 0.08);
     }
 }

@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 
 from hottopics import app, db
 from hottopics.models import Users, Posts, Comments, Favourites, CommentLikes, Follows, Votes
-from hottopics.forms import Registration, LoginForm, UpdateAccount, CreatePost, PasswordChange
+from hottopics.forms import Registration, LoginForm, UpdateAccount, CreatePost, PasswordChange, LogOut
 from hottopics.helpers import display_date
 
 
@@ -112,6 +112,7 @@ def account(username):
 def settings():
     settingsForm = UpdateAccount()
     passwordForm = PasswordChange()
+    LogOutForm = LogOut()
     if settingsForm.validate_on_submit():
         if settingsForm.picture.data:
             picture_file = save_picture(settingsForm.picture.data)
@@ -130,10 +131,12 @@ def settings():
             return redirect(url_for('account', username=current_user.username))
         else: 
             flash('Wrong Password', 'danger')
+    if LogOutForm.validate_on_submit():
+        return redirect(url_for('logout'))
     elif request.method == "GET":
         settingsForm.username.data = current_user.username
         settingsForm.email.data = current_user.email
-    return render_template('settings.html', settingsForm=settingsForm, passwordForm=passwordForm)
+    return render_template('settings.html', settingsForm=settingsForm, passwordForm=passwordForm, LogOutForm=LogOutForm)
 
 def save_picture(picture):
     random_hex = secrets.token_hex(8)
@@ -235,7 +238,7 @@ def loadMorePosts():
             post["percentages"] = percentages
             post["choice"] = vote.choice if vote else False
 
-        comments = Comments.query.filter_by(post_id=accountUsername).order_by(Comments.likes.desc()).paginate(per_page=10, page=pageNum)
+        comments = Comments.query.filter_by(post_id=accountUsername).order_by(Comments.likes.desc(), Comments.posted.desc()).paginate(per_page=10, page=pageNum)
         liked_comments = []
         for like in CommentLikes.query.filter_by(user_id=current_user.id):
             liked_comments.append(like.comment)
@@ -547,8 +550,8 @@ def deletePost():
         return jsonify(action='nopost')
     if not post.author == current_user:
         abort(403)
-    #db.session.delete(post)
-    #db.session.commit()
+    db.session.delete(post)
+    db.session.commit()
     return jsonify(action='deleted')
 
 @app.route("/api/delete_comment", methods=["DELETE"])
@@ -594,8 +597,6 @@ def comment():
     commentInfo['is_liked'] = False
     return jsonify(action='succesful', comment=commentInfo)
  
-
-
 
 
 

@@ -7,6 +7,7 @@
 
 .form-group{
     margin-bottom: calc(var(--page-width)*0.02);
+    position: relative;
 }
 
 .form-legend{
@@ -42,6 +43,7 @@
 
 .form-button{
     position: absolute;
+    margin-top: calc(var(--page-width)*.015); 
     left: 50%;
     transform: translateX(-50%);
 }
@@ -75,12 +77,63 @@
     background-color: #333;
 }
 
+.LogOutForm{
+    padding: 0;
+}
+
+.LogOutButton{
+    margin-bottom: calc(var(--page-width)*0.2);
+}
+
+.postContentText{
+    height: calc(var(--page-width)*0.17);
+    resize: none;
+}
+
+.addPostChoice{
+    position: absolute;
+    left: 0;
+    background-color: var(--success);
+}
+
+.removePostChoice{
+    position: absolute;
+    right: 0;
+    background-color: var(--danger);
+}
+
+.addPostChoice, .removePostChoice{
+    top: calc(var(--page-width)*-.12); 
+    margin-top: calc(var(--page-width)*.015); 
+    text-decoration: none !important;
+    border: none;
+    padding: 0;
+    outline: none !important;
+    width: calc(var(--page-width)*.16);
+    height: calc(var(--page-width)*.08);
+    border-radius: calc(var(--page-width)*.04);
+    font-size: calc(var(--page-width)*.02); 
+}
+
+.add-removeContainer{
+    width: 75%;
+    margin: auto;
+    position: relative;
+}
+
+.hiddenPostChoice{
+    display: none;
+}
 
 @media screen and (max-width: 660px) {
     .form-text{
         height: calc(var(--page-width)*.12);
         border-radius: calc(var(--page-width)*.06);
         font-size: calc(var(--page-width)*.05);  
+    }
+
+    .postContentText{
+        height: calc(var(--page-width)*0.24);
     }
 
     .multi-button{

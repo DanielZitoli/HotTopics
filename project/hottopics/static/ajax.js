@@ -455,6 +455,28 @@ $(document).ready(function(){
         }
     });
 
+    //Trigger LogOut Modal
+    $('.LogOutButton').click(function(){
+        $('#LogOutModal').modal('show')
+    });
+
+    $(".addPostChoice").click(function(){
+        if($('.postChoice3').hasClass('hiddenPostChoice')){
+            $('.postChoice3').removeClass('hiddenPostChoice') 
+        } else if($('.postChoice4').hasClass('hiddenPostChoice')){
+            $('.postChoice4').removeClass('hiddenPostChoice') 
+        } 
+    });
+
+    $(".removePostChoice").click(function(){
+        if(!$('.postChoice4').hasClass('hiddenPostChoice')){
+            $('.postChoice4').addClass('hiddenPostChoice') 
+            $('.postChoice4').children('input').val('') 
+        } else if(!$('.postChoice3').hasClass('hiddenPostChoice')){
+            $('.postChoice3').addClass('hiddenPostChoice')
+            $('.postChoice3').children('input').val('')  
+        }  
+    });
 
 
 

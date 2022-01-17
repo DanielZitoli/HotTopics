@@ -1,6 +1,23 @@
 {% extends 'layout-home.html' %}
 
 {% block main %}
+    <div class="modal fade" id="LogOutModal" tabindex="-1" role="dialog" aria-labelledby="LogOutModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-main modal-content">
+                <div class="my-modal-header">
+                    <h3 class="modal-title" id="LogOutModalLabel">Log Out</h3>
+                </div>
+                <div class="my-modal-body">
+                    Are you sure you want to log out of your account?
+                </div>
+                <div class="my-modal-footer">
+                    <button type="button" class="modal-button modal-button-white" data-dismiss="modal">Cancel</button>
+                    {{ LogOutForm.submit(class="modal-button modal-button-red", form="LogOutForm", id="LogOutSubmit") }}
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <form action="" method="POST" enctype="multipart/form-data" class="container-form" autocomplete="off" autofill="off">
         {{ settingsForm.csrf_token(id="csrfSettings") }}
         <fieldset>
@@ -102,6 +119,16 @@
             {{ passwordForm.submit(class="multi-button form-button", id="passwordSubmit") }}
         </div> 
     </form>
+
+    <form id="LogOutForm" action="" method="POST" enctype="multipart/form-data" class="container-form LogOutForm" autocomplete="off" autofill="off">
+        {{ passwordForm.csrf_token(id="csrfLogOut") }}
+        <fieldset>
+            <legend class="form-legend">Log Out of Account</legend>
+        </fieldset>
+    </form>
+    <div class="form-group LogOutButton">
+        <button class="multi-button form-button">Log Out</button>
+    </div>
 
     <a href="/account/{{ current_user.username }}">
         <button class="back-button">

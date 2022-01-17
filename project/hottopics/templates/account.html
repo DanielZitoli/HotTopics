@@ -44,7 +44,7 @@
             <h3 class="account-joined" >Joined {{ date_joined }}</h3>
             {% if current_user==user %}
             <a href="{{ url_for('settings')}}">
-                <button class="multi-button account-button">
+                <button id="follow-unfollow" class="multi-button account-button">
                     Edit account
                 </button>
             </a>

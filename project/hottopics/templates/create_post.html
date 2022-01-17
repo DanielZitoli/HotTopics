@@ -9,28 +9,28 @@
                 {{ PostForm.content.label(class="form-label") }}
 
                 {% if PostForm.content.errors %}
-                    {{ PostForm.content(class="form-text is-invalid", autocomplete="off") }}
+                    {{ PostForm.content(class="form-text postContentText is-invalid", autocomplete="off") }}
                     <div class="invalid-feedback">
                         {% for error in PostForm.content.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div> 
                 {% else %}
-                    {{ PostForm.content(class="form-text") }}
+                    {{ PostForm.content(class="form-text postContentText") }}
                 {% endif %}
             </div>
             <div class="form-group">
                 {{ PostForm.choice_1.label(class="form-label") }}
 
                 {% if PostForm.choice_1.errors %}
-                    {{ PostForm.choice_1(class="form-text is-invalid", placeholder="Choice #1") }}
+                    {{ PostForm.choice_1(class="form-text is-invalid") }}
                     <div class="invalid-feedback">
                         {% for error in PostForm.choice_1.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ PostForm.choice_1(class="form-text", placeholder="Choice #1") }}
+                    {{ PostForm.choice_1(class="form-text") }}
                 {% endif %}
             </div>
             <div class="form-group">
@@ -47,7 +47,7 @@
                     {{ PostForm.choice_2(class="form-text") }}
                 {% endif %}
             </div>
-            <div class="form-group">
+            <div class="form-group hiddenPostChoice postChoice3">
                 {{ PostForm.choice_3.label(class="form-label") }}
 
                 {% if PostForm.choice_3.errors %}
@@ -61,7 +61,7 @@
                     {{ PostForm.choice_3(class="form-text") }}
                 {% endif %}
             </div>
-            <div class="form-group">
+            <div class="form-group hiddenPostChoice postChoice4">
                 {{ PostForm.choice_4.label(class="form-label") }}
 
                 {% if PostForm.choice_4.errors %}
@@ -79,6 +79,11 @@
 
         <div class="form-group">
             {{ PostForm.submit(class="multi-button form-button") }}
-        </div> 
+        </div>  
     </form>
+     
+    <div class="add-removeContainer">
+        <button class="addPostChoice multi-button">Add Choice</button>
+        <button class="removePostChoice multi-button">Remove Choice</button>
+    </div>
 {% endblock %}

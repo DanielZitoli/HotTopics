@@ -62,4 +62,6 @@ class CreatePost(FlaskForm):
     choice_4 = StringField('Choice #4', validators=[Length(max=40)])
     submit = SubmitField('Create Post') 
 
+class LogOut(FlaskForm):
+    submit  = SubmitField('Confirm') 
  

@@ -99,3 +99,7 @@
     text-align: center;
     font-size: calc(var(--page-width)*0.08);
 }
+
+#follow-unfollow{
+    margin: calc(var(--page-width)*0.01) 0; 
+}
