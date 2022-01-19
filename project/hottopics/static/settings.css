@@ -115,6 +115,11 @@
     font-size: calc(var(--page-width)*.02); 
 }
 
+.addPostChoice:disabled, .removePostChoice:disabled{
+    color: rgb(22, 22, 22);
+    opacity: 0.5;
+}
+
 .add-removeContainer{
     width: 75%;
     margin: auto;

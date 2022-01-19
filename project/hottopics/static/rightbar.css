@@ -1,3 +1,104 @@
 #rightbar{
     border-left: 1px solid #444;
+    display: block;
+    text-align: center;
 }
+
+.recommendedContainer{
+    width: calc(var(--page-width)*.5);
+    border-radius: calc(var(--page-width)*.03);
+    background-color: var(--second-background);
+    margin: calc(var(--page-width)*.05) min(calc(var(--page-width)*.05), calc(39vw - 450px));
+    display: none;
+}
+
+.recommendedTitle{
+    color: white;
+    font-weight: bold;
+    font-size: calc(var(--page-width)*.04);
+    padding-top: calc(var(--page-width)*.02);
+}
+
+.recommendedUsers{
+    width: 100%;
+    margin: calc(var(--page-width)*.02) auto 0; 
+}
+
+.recommendedUser{
+    width: 100%;
+    height: calc(var(--page-width)*.11); 
+    display: grid;
+    grid-template-columns: calc(var(--page-width)*.11) 1fr calc(var(--page-width)*.165);
+}
+
+.recommendedPfp{
+    width: calc(var(--page-width) * 0.08);
+    height: calc(var(--page-width) * 0.08);
+    border-radius: calc(var(--page-width) * 0.05);
+    margin: calc(var(--page-width) * 0.015); 
+    user-select: none;
+}
+.recommendedPfp:hover{
+    opacity: 0.8;
+}
+.recommendedHeader{
+    position: relative;
+    height: calc(var(--page-width) * 0.08);
+    margin: calc(var(--page-width) * 0.015) 0; 
+}
+.recommendedUsername{
+    font-size: calc(var(--page-width) * 0.03);
+    color: white;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    user-select: none;
+}
+.recommendedUsername:hover{
+    text-decoration: underline solid #fff;
+}
+.recommendedFollowers{
+    font-size: calc(var(--page-width) * 0.025);
+    color: rgb(153, 152, 152);
+    margin: 0;
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    user-select: none;
+}
+
+
+.follow-button{
+    text-decoration: none !important;
+    border: none;
+    padding: 0;
+    outline: none !important;
+    border-radius: calc(var(--page-width)*0.04);
+    height: calc(var(--page-width)*0.06);
+    width: calc(var(--page-width)*0.15);
+    font-size: calc(var(--page-width)*0.025);
+    margin: calc(var(--page-width)*0.025) calc(var(--page-width)*0.015) calc(var(--page-width)*0.025) 0; 
+    user-select: none;
+}
+
+.follow-button:hover{
+    box-shadow: 1px 1px 10px #000;
+}
+
+.follow-button:active {
+    transform: scale(0.99);
+}
+
+
+@media screen and (max-width: 1180px) {
+    .recommendedContainer{
+        margin: calc(var(--page-width)*.05) min(calc(var(--page-width)*.05), calc(45vw - 450px));
+    } 
+}
+
+@media screen and (max-width: 1040px) {
+    .recommendedContainer{
+        display: none !important;
+    } 
+}   

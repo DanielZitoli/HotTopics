@@ -38,10 +38,11 @@
         </div>
     {% endraw %}
 </script>
+
 <script id="PostsSearch-template" type="text/x-handlebars-template">
     {% raw %}
         <div class="searchResults">
-            <div class="searchPost">
+            <div id="{{id}}-searchPost" class="searchPost">
                 <div class="postSearchHead">
                     <img src="static/profile_pics/{{profile_image}}" alt="profile picture" class="searchProfilePic-post">
                     <h3 class="searchUsername-post">{{username}}</h3>

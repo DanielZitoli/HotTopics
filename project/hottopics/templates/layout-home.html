@@ -60,7 +60,47 @@
     </main>
 
     <div id="rightbar">
+        <div class="recommendedContainer">
+            <h2 class="recommendedTitle"><b>Accounts you might like</b></h2>
+            <div class="recommendedUsers"></div>
+        </div>
+    </div>
 
+    <script id="recommended-template" type="text/x-handlebars-template">
+        {% raw %}
+            <div id="{{id}}-Recommended" class="recommendedUser">  
+                <div class="recommendedPfp-section">
+                    <a href="/account/{{username}}">
+                        <img src="/static/profile_pics/{{profile_image}}" alt="Profile Picture" class="recommendedPfp">
+                    </a>
+                </div>
+                <div class="recommendedHeader">
+                    <a href="/account/{{username}}">
+                        <h3 class="recommendedUsername">{{username}}</h3>
+                    </a>
+                    <h4 class="recommendedFollowers">{{followers}} Followers</h4>
+                </div>
+                <div class="recommendedFollow">
+                    <button class="follow-button recommendedFollowButton follow account-button" value="{{id}}">Follow</button>
+                </div>
+            </div> 
+        {% endraw %}
+    </script>
+    <div class="modal fade" id="unfollowRecommendedModal" tabindex="-1" role="dialog" aria-labelledby="unfollowRecommendedModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-main modal-content">
+                <div class="my-modal-header">
+                    <h3 class="modal-title" id="unfollowRecommendedModalLabel">Unfollow?</h3>
+                </div>
+                <div class="my-modal-body">
+                    Are you sure you want to unfollow this account?
+                </div>
+                <div class="my-modal-footer">
+                    <button type="button" class="modal-button modal-button-white button-left" data-dismiss="modal">Cancel</button>
+                    <button id="unfollowRecommendedButton" type="button" class="modal-button modal-button-red button-right" data-dismiss="modal">Unfollow</button>
+                </div>
+            </div>
+        </div>
     </div>
 
 {% endblock %}

@@ -1,5 +1,5 @@
 import os
-from flask import Flask 
+from flask import Flask
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -11,6 +11,7 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 # Configs cookies to be stored in computer's harddrive, and to not last permanently
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+
 
 ENV = 'dev'
 if ENV == 'dev':

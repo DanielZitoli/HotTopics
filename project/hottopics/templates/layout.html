@@ -24,6 +24,7 @@
         <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
         {% if current_user.is_authenticated %}
         <link href="/static/main.css" rel="stylesheet">
+        <script src="/static/ajax.js"></script> 
         {% else %}
         <link href="/static/index.css" rel="stylesheet">
         {% endif %}
@@ -37,7 +38,6 @@
         <link href="/static/comments.css" rel="stylesheet">   
 
         <script src="/static/script.js"></script>
-        <script src="/static/ajax.js"></script> 
 
         <title>
             {% if title%}

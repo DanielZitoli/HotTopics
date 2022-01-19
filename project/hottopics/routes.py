@@ -3,12 +3,9 @@ import os
 import random
 from typing import Type
 from PIL import Image
-from flask import json, redirect, render_template, request, flash, jsonify, abort
+from flask import json, redirect, render_template, request, flash, jsonify, abort, session
 from flask.helpers import url_for
-from sqlalchemy.orm import query
-from sqlalchemy.orm import session
-from sqlalchemy.orm.session import Session
-from werkzeug.datastructures import ContentRange
+from sqlalchemy.orm import session, query
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime, timedelta
@@ -83,10 +80,12 @@ def following():
 def favourites():
     return render_template("home.html", title="Favourites")
 
-@app.route("/post/<post_id>")
+@app.route("/post/<int:post_id>")
 @login_required
 def post(post_id):
     if not post_id:
+        abort(400)
+    if not type(post_id) is int:
         abort(400)
     post = Posts.query.get(post_id)
     if not post:
@@ -529,6 +528,7 @@ def searchResults():
         results = [] 
         for post in posts:
             result = {}
+            result['id'] = post.id
             result['username'] = post.author.username
             result['profile_image'] = post.author.image_file
             result['content'] = post.content
@@ -550,6 +550,19 @@ def deletePost():
         return jsonify(action='nopost')
     if not post.author == current_user:
         abort(403)
+    
+    favourites = Favourites.query.filter_by(post=post.id)
+    for favourite in favourites:
+        db.session.delete(favourite)
+
+    comments = post.comments
+    if comments:
+        for comment1 in comments:
+            likes = CommentLikes.query.filter_by(comment=comment1.id)
+            for like in likes:
+                db.session.delete(like)
+            db.session.delete(comment1)
+    print(comments)
     db.session.delete(post)
     db.session.commit()
     return jsonify(action='deleted')
@@ -560,14 +573,20 @@ def deleteComment():
     comment_id = request.form.get('comment_id')
     if not comment_id:
         abort(400)
-    comment = Comments.query.get(comment_id)
-    if not comment:
+    comment1 = Comments.query.get(comment_id)
+    if not comment1:
         return jsonify(action='nocomment')
-    if not comment.author == current_user:
+    if not comment1.author == current_user:
         abort(403)
-    db.session.delete(comment)
-    post = Posts.query.get(comment.post_id)
+
+    likes = CommentLikes.query.filter_by(comment=comment1.id)
+    for like in likes:
+        db.session.delete(like)
+    
+    db.session.delete(comment1)
+    post = Posts.query.get(comment1.post_id)
     post.comment_count -= 1
+
     db.session.commit()
     return jsonify(action='deleted')
 
@@ -596,10 +615,38 @@ def comment():
     commentInfo['ownComment'] = True
     commentInfo['is_liked'] = False
     return jsonify(action='succesful', comment=commentInfo)
- 
 
+@app.route("/api/loadSidebar")
+@login_required
+def loadSidebar():
+    my_followings = Follows.query.filter_by(follower=current_user.id).all()
+    following_ids = [current_user.id]
+    for my_following in my_followings:
+        following_ids.append(my_following.following)
+    FollowingOfFollowing = {}
+    for my_following in my_followings:
+        friends_followings = Follows.query.filter_by(follower=my_following.following).filter(Follows.following.notin_(following_ids)).all()
+        for user in friends_followings:
+            if user.following in FollowingOfFollowing:
+                FollowingOfFollowing[user.following] += 1
+            else:
+                FollowingOfFollowing[user.following] = 1
 
+    recommended = list(sorted(FollowingOfFollowing.items(), key=lambda item: item[1], reverse=True))[:20]
+    users = []
+    for row in recommended:
+        users.append(Users.query.get(row[0]))
+    users.sort(key=lambda user: user.followers, reverse=True)
 
+    recommended = []
+    for user in users[:6]:
+        results = {}
+        results['id'] = user.id
+        results['username'] = user.username
+        results['followers'] = displayNumbers(user.followers)
+        results['profile_image'] = user.image_file
+        recommended.append(results)
+    return jsonify(action='success', recommended=recommended)
 
 
 @app.route("/api/createUsers", methods=["POST"])
@@ -612,6 +659,8 @@ def createUsers():
         usernames.append(row['username'])
 
     create_users(usernames)
+    assign_followers()
+    assign_follows()
     return jsonify(action='success')
 
 
@@ -640,5 +689,23 @@ def assign_followers():
     users = Users.query.all()
     for user in users:
         user.followers = random.randint(10, 20000)
+    db.session.commit()
+    return
+
+def assign_follows():
+    users = Users.query.all()
+    for user in users:
+        for user2 in users:
+            if not user == user2:
+                if random.randint(10, 20000) % 3 == 0:
+                    follow = Follows(follower=user.id, following=user2.id) 
+                    db.session.add(follow)
+    db.session.commit()
+    return
+
+def delete_comments():
+    comments = Comments.query.all()
+    for comment in comments:
+        db.session.delete(comment)
     db.session.commit()
     return

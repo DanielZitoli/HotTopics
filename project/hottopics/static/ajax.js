@@ -17,7 +17,8 @@ $(document).ready(function(){
     }
 
     LoadMorePosts()
-    
+    LoadSideBarContent()
+
 
     $('main').scroll(function(e){
         if($('#loadMore')[0]){
@@ -126,9 +127,38 @@ $(document).ready(function(){
         })
     };
 
+    function LoadSideBarContent(){
+        $.ajax({
+            url: '/api/loadSidebar',
+            type: "GET",
+            DataType: "json",
+
+            success: function(data){
+                var recommendedScript = document.querySelector('#recommended-template')
+                if (recommendedScript){
+                    var recommendedTemplate = Handlebars.compile(recommendedScript.innerHTML) 
+                }
+
+                data.recommended.forEach(function(userData, i){
+                    if (userData.username.length > 14){
+                        userData.username = userData.username.substring(0, 13) + '...' 
+                    }
+                    if (!(window.location.pathname.split('/')[1] == 'account' && window.location.pathname.split('/')[2] == userData.username)){
+                        recommended = recommendedTemplate(userData)
+                        $('.recommendedUsers').append(recommended)
+                    }
+                })            
+                $('.recommendedContainer').show()
+            }
+        })
+    }
+
+
+
     //Redirect to Post Route
     $('main').on('click', '.commentButtonLink', function(e){
         post_id = $(this).parents('.post-container').attr('id')
+        console.log(post_id)
         window.location.href = '/post/'+ post_id
     });
 
@@ -287,6 +317,72 @@ $(document).ready(function(){
         });
     }
 
+    //Follow/Unfollow recommended accounts
+    $('#unfollowRecommendedButton').click(FollowRecommended)
+
+    $('#rightbar').on('click', '.recommendedFollowButton', function(e){
+        var followButton = $(e.target)
+        if (followButton.hasClass('follow')){
+            FollowRecommended(e)
+        } else if (followButton.hasClass('following')){
+            userRecommended = $('#' + followButton.val() + '-Recommended')
+            username = userRecommended.children('.recommendedUsername').html()
+            $('#unfollowRecommendedButton').val(followButton.val())
+            $('#unfollowRecommendedModalLabel').html('Unfollow ' + username + '?') 
+            $('#unfollowRecommendedModal').modal('show')
+        }
+    });
+    $('#rightbar').on('mouseenter', '.recommendedFollowButton', function(e){
+        var followButton = $(e.target)
+        if (followButton.hasClass('following')){
+            followButton.html("Unfollow?")
+            followButton.removeClass("account-following")
+            followButton.addClass("account-unfollow") 
+        }
+    });
+    $('#rightbar').on('mouseleave', '.recommendedFollowButton', function(e){
+        var followButton = $(e.target)
+        if (followButton.hasClass('following')){
+            followButton.html("Following")
+            followButton.addClass("account-following")
+            followButton.removeClass("account-unfollow") 
+        }    
+    });
+
+    function FollowRecommended(e){
+        var followButton = $(e.target)
+        var follow_id = followButton.val()
+        if (!followButton.hasClass('recommendedFollowButton')){
+            followButton = $('#' + follow_id + '-Recommended').find('.recommendedFollowButton') 
+        }
+        $.ajax({
+            url: '/api/follow',
+            type: "PUT",
+            DataType: "json",
+            data: {'user_id': follow_id},
+
+            success: function(response){
+                if (response.action==='error') {return} 
+    
+                userRecommended = $('#' + follow_id + '-Recommended')
+                var followerCount = userRecommended.find('.recommendedFollowers')
+                followers = Number(followerCount.html().split(' ')[0])
+                if (followButton.html().trim() === "Follow"){
+                    followButton.html("Following")
+                    if (followers || followers==0) {followerCount.html(followers + 1 + " Followers")}
+                } else {
+                    followButton.html("Follow")
+                    if (followers || followers==0) {followerCount.html(followers - 1 + " Followers")}
+                }
+
+                followButton.toggleClass('account-following')
+                followButton.toggleClass('account-button')
+                followButton.toggleClass('following')
+                followButton.toggleClass('follow')  
+
+            }
+        }); 
+    }
 
     //Like and Comment Hover CSS
     $("main").on("mouseenter mouseleave", ".post-stats", function(e){
@@ -380,6 +476,7 @@ $(document).ready(function(){
 
     $('#deletePostButton').click(function(e){
         var post_id = $(e.target).val()
+        console.log(post_id)
         $.ajax({
             url: '/api/delete_post',
             type: "DELETE",
@@ -462,20 +559,35 @@ $(document).ready(function(){
 
     $(".addPostChoice").click(function(){
         if($('.postChoice3').hasClass('hiddenPostChoice')){
-            $('.postChoice3').removeClass('hiddenPostChoice') 
+            $('.postChoice3').removeClass('hiddenPostChoice')
+            $(".removePostChoice")[0].disabled = false  
         } else if($('.postChoice4').hasClass('hiddenPostChoice')){
             $('.postChoice4').removeClass('hiddenPostChoice') 
+            $(".addPostChoice")[0].disabled = true 
         } 
     });
 
     $(".removePostChoice").click(function(){
         if(!$('.postChoice4').hasClass('hiddenPostChoice')){
             $('.postChoice4').addClass('hiddenPostChoice') 
-            $('.postChoice4').children('input').val('') 
+            $('.postChoice4').children('input').val('')
+            $(".addPostChoice")[0].disabled = false 
         } else if(!$('.postChoice3').hasClass('hiddenPostChoice')){
             $('.postChoice3').addClass('hiddenPostChoice')
-            $('.postChoice3').children('input').val('')  
+            $('.postChoice3').children('input').val('') 
+            $(".removePostChoice")[0].disabled = true  
         }  
+    });
+
+    //Redirecting Search Results
+    $('.searchBody').on('click', '.searchResults', function(e){
+        if($(this).children().hasClass('searchUser')){
+            username = $(this).find('.searchUsername-user').html()
+            window.location.href = '/account/' + username
+        }else if($(this).children().hasClass('searchPost')){
+            post_id = parseInt($(this).children().attr('id'))
+            window.location.href = '/post/' + post_id
+        }
     });
 
 
@@ -483,7 +595,7 @@ $(document).ready(function(){
 
 
     //create users
-    $('.doesntexist').click(function(){
+    $('#doesntexist').click(function(){
         $.ajax({
             url: '/static/usernames.js',
             type: 'GET',
