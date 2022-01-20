@@ -73,9 +73,6 @@
     color: white;
 }
 
-.back-button:hover{
-    background-color: #333;
-}
 
 .LogOutForm{
     padding: 0;
@@ -148,4 +145,10 @@
         font-size: calc(var(--page-width)*0.04)
     }
     
+}
+
+@media(hover:hover) and (pointer: fine) {  
+    .back-button:hover{
+        background-color: #333;
+    }
 }

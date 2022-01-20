@@ -36,6 +36,7 @@
 .multi-button{
     position: absolute;
     text-decoration: none !important;
+    cursor: pointer; 
     border: none;
     padding: 0;
     outline: none !important;
@@ -45,11 +46,9 @@
     font-size: calc(var(--page-width)*0.03);
 }
 
-.multi-button:hover{
-    box-shadow: 1px 1px 10px #000;
-}
 
 .multi-button:active {
+    box-shadow: 1px 1px 10px #000;
     transform: scale(0.99);
 }
 
@@ -102,4 +101,16 @@
 
 #follow-unfollow{
     margin: calc(var(--page-width)*0.01) 0; 
+}
+
+@media(hover:hover) and (pointer: fine) {
+    .multi-button:hover{
+        box-shadow: 1px 1px 10px rgb(0, 0, 0);
+    }
+}
+@media(hover:none){
+    .multi-button:hover, .multi-button:active{ 
+        box-shadow: 1px 1px 10px #000;
+        transform: scale(0.99);
+    } 
 }

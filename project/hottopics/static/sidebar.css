@@ -29,11 +29,8 @@
 .add:hover{
     background-color: #ff5062 !important;
 }
-#sidebar ul li:not(.avoidtitle):hover{
-    background-color: #212122;
-}
 
-#sidebar ul li a{
+#sidebar ul li .sidebarTitleContain{
     position: relative;
     display: block;
     display: flex;
@@ -43,7 +40,7 @@
     color: var(--light);
     margin-bottom: 15px;
 }
-#sidebar ul li a .icon{
+#sidebar ul li .sidebarTitleContain .icon{
     position: relative;
     display: block;
     min-width: 60px;
@@ -51,11 +48,11 @@
     line-height: 60px;
     text-align: center;
 }
-#sidebar ul li a .icon .material-icons{
+#sidebar ul li .sidebarTitleContain .icon .material-icons{
     font-size: 36px;
     margin-top: 12px;
 }
-#sidebar ul li a .title{
+#sidebar ul li .sidebarTitleContain .title{
     position: relative;
     display: block;
     padding: 0 10px;
@@ -69,6 +66,7 @@
 .bigtitle{
     font-family: 'Righteous', cursive; 
     font-size: 40px !important;
+    color: var(--light);
 }
 
 #navlogo{
@@ -129,7 +127,10 @@
     .toggleLogo{
         left: 62px !important;
     }
+}
 
-    
-    
+@media(hover:hover) and (pointer: fine) {
+    #sidebar ul li:not(.avoidtitle):hover{
+        background-color: #212122;
+    }
 }

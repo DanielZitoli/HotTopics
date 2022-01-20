@@ -104,10 +104,6 @@
     width: 100%;
 }
 
-.searchResults:hover{
-    background-color: #292929;
-}
-
 .searchUser{
     width: 80%;
     margin: 0 auto;
@@ -212,5 +208,11 @@
     }
     noresults{
         font-size: calc(var(--page-width) * 0.08);
+    }
+}
+
+@media(hover:hover) and (pointer: fine) {  
+    .searchResults:hover{
+        background-color: #292929;
     }
 }

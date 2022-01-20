@@ -18,6 +18,10 @@ main{
     height: 100vh;
     overflow-y: scroll;
 }
+.noClicks{
+    pointer-events: none;
+    touch-action: none;
+}
 
 :root{
     --page-width: 600px;

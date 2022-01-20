@@ -95,7 +95,11 @@ def post(post_id):
 @app.route("/account/<username>")
 @login_required
 def account(username):
+    if not username:
+        abort(400)
     user = Users.query.filter_by(username = username).first()
+    if not user:
+        abort(404)
     follow = Follows.query.filter_by(follower=current_user.id, following=user.id).first()
     total_votes, post_count = 0, 0
     for post in user.posts:
@@ -632,10 +636,19 @@ def loadSidebar():
             else:
                 FollowingOfFollowing[user.following] = 1
 
-    recommended = list(sorted(FollowingOfFollowing.items(), key=lambda item: item[1], reverse=True))[:20]
+    recommended = list(sorted(FollowingOfFollowing.items(), key=lambda item: item[1], reverse=True))[:15]
+    newRecommended = []
+    for rec in recommended:
+        newRecommended.append(rec[0])
+
+    if len(newRecommended) < 6:
+        extraUsers = Users.query.filter(Users.id.notin_(newRecommended)).limit(6-len(newRecommended)).all()
+        for user in extraUsers:
+            newRecommended.append(user.id)
+
     users = []
-    for row in recommended:
-        users.append(Users.query.get(row[0]))
+    for row in newRecommended:
+        users.append(Users.query.get(row))
     users.sort(key=lambda user: user.followers, reverse=True)
 
     recommended = []
@@ -646,6 +659,7 @@ def loadSidebar():
         results['followers'] = displayNumbers(user.followers)
         results['profile_image'] = user.image_file
         recommended.append(results)
+
     return jsonify(action='success', recommended=recommended)
 
 

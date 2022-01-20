@@ -108,6 +108,9 @@
     margin: calc(var(--page-width)*.0125);
     user-select: none;
 }
-.deleteComment:hover{
-    background-color: #1b1b1b;
+
+@media(hover:hover) and (pointer: fine) {
+    .deleteComment:hover{
+        background-color: #1b1b1b;
+    }
 }

@@ -390,10 +390,8 @@ $(document).ready(function(){
         var $icon = $stat.find('.post-icon')
         if ($stat.hasClass('post-comment')){
             $stat.toggleClass('comment-hover')
-            $icon.toggleClass('icon-comment-hover')
         } else if ($stat.hasClass('post-like')){
             $stat.toggleClass('like-hover')
-            $icon.toggleClass('icon-like-hover')
         }
     });
 
@@ -456,9 +454,11 @@ $(document).ready(function(){
 
     $(".searchType").click(function(){
         if (this.id == 'searchUsers'){
+            if(searchType == 'users'){return}
             searchType = 'users'
             searchBar[0].placeholder = 'Search for users...'
         }else if (this.id == 'searchPosts'){
+            if(searchType == 'posts'){return}
             searchType = 'posts'
             searchBar[0].placeholder = 'Search for posts...'
         }

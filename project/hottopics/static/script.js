@@ -2,10 +2,38 @@ $(document).ready(function(){
 
     $("#sidebar").click(openSidebar);
     $("#sidebar").mouseenter(openSidebar);
-    $("main").click(closeSidebar);
     $("#sidebar").mouseleave(closeSidebar);
+    $("main").click(closeSidebar);
+    $("#sidebar").bind('transitionend', changeLinks); 
 
-
+    function changeLinks(){
+        sidebarLinks = $.makeArray($("#sidebar li a"))
+        if(sidebarExpanded == true){
+            sidebarLinks.forEach(function(link, i){
+                sidebarTitle = $(link).children('.title').html() 
+                if(sidebarTitle == 'Home'){
+                    link.href = '/home'
+                } else if (sidebarTitle == 'Following'){
+                    link.href = '/following'
+                } else if (sidebarTitle == 'Favourites'){
+                    link.href = '/favourites'
+                } else if (sidebarTitle == 'Search'){
+                    link.href = '/search'
+                } else if (sidebarTitle == 'Profile'){
+                    username = $(link).children('.title').attr('id')
+                    link.href = '/account/' + username
+                } else if (sidebarTitle == 'Create Post'){
+                    link.href = '/create_post'
+                }
+            })
+        }
+        if(sidebarExpanded == false){
+            sidebarLinks.forEach(function(link, i){
+                link.href = "javascript:void(0)"
+            }) 
+        }
+        console.log(sidebarExpanded)
+    }
 
     function openSidebar(){
         sidebarExpanded = true
@@ -14,6 +42,7 @@ $(document).ready(function(){
         $(".add").addClass('toggleTitle')
         $("ul").addClass('toggleNav')
         $("#navlogo").addClass("toggleLogo")
+        $("main").addClass("noClicks")
     }
     function closeSidebar(){
         sidebarExpanded = false
@@ -22,6 +51,7 @@ $(document).ready(function(){
         $(".add").removeClass('toggleTitle')
         $("ul").removeClass('toggleNav') 
         $("#navlogo").removeClass("toggleLogo")
+        $("main").removeClass("noClicks")
     }
 
     //Logic for Sidebar Mobile Swipe
@@ -36,7 +66,12 @@ $(document).ready(function(){
     title = document.querySelector(".avoidtitle")
     add = document.querySelector(".add")
 
-    sidebarExpanded = false
+    if(window.matchMedia("(hover:hover)").matches){
+        sidebarExpanded = true
+    } else {
+        sidebarExpanded = false
+        closeSidebar()
+    }
     startPos = 0
     currentPosition = 0
     currentSlide = 0
