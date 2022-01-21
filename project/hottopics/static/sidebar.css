@@ -1,13 +1,15 @@
 #sidebar{
     background-color: var(--background);
     height: 100%;
-    width: 100%;
     max-width: 80vw;
     overflow-y: auto;
     z-index: 1;
     display: flexbox;
     border-right: 1px solid #444;
     transition: width 1s;
+}
+.sidebarWidth{
+    width: 100%;
 }
 #sidebar ul{
     margin: 40px auto 0 auto;
@@ -83,7 +85,6 @@
     #navlogo{
         position: absolute;
         display: block;
-        left: calc(10vw - 65px);
         min-width: 60px;
         height: 60px;
         line-height: 60px;
@@ -91,15 +92,18 @@
         font-size: 40px;
         transition: all 0.5s;
     }
+    .navLeft{
+        left: calc(10vw - 65px);
+    }
     #titlelogo{
         visibility: hidden;
     }
 
     .toggleSidebar{
-        width: 300px !important;
+        width: 300px;
         transition: all 0.5s;
     }
-    
+
     .toggleTitle{
         opacity: 1;
         transition: opacity .8s ease-in 0.4s;
@@ -107,12 +111,11 @@
 
     .toggleNav{
         margin-left: calc(10vw - 65px);
-        
     }
 
     .toggleLogo{
         transition: all 0.5s;
-        left: calc(10vw - 65px + 27px) !important;
+        left: calc(10vw - 65px + 27px);
     }
 }
 
@@ -121,11 +124,11 @@
         margin: 40px auto 0 auto;
     }
 
-    #navlogo{
+    .navLeft{
         left: 0;
     }
     .toggleLogo{
-        left: 62px !important;
+        left: 62px;
     }
 }
 

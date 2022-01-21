@@ -32,7 +32,10 @@ $(document).ready(function(){
                 link.href = "javascript:void(0)"
             }) 
         }
-        console.log(sidebarExpanded)
+        //cancels animation when transition is complete
+        if(animationID){
+            cancelAnimationFrame(animationID)
+        }   
     }
 
     function openSidebar(){
@@ -75,6 +78,7 @@ $(document).ready(function(){
     startPos = 0
     currentPosition = 0
     currentSlide = 0
+    animationID = null
 
 
     function touchStart(event){
@@ -99,7 +103,6 @@ $(document).ready(function(){
     }
 
     function touchEnd(event){
-        cancelAnimationFrame(animationID)
 
         //resets sidebars transitions
         $("#sidebar-container *").css("transition", "")
@@ -133,13 +136,13 @@ $(document).ready(function(){
 
     function animation(){
         setSidebarPosition()
-        requestAnimationFrame(animation)
+        animationID = requestAnimationFrame(animation)  
     }
 
     function setSidebarPosition(){
         shift = sidebarExpanded ? 240 + currentSlide : currentSlide
         sidebar.style.width = `max(${60 + shift}px, 60px)`
-        logo.style.left = `min(${shift * 62/230}px, 62px)`
+        logo.style.left = `min(max(${shift * 62/230}px, 0px), 62px)`
         title.style.opacity = `${(shift - 100)/140}`
         add.style.opacity = `${(shift - 100)/140}`
 

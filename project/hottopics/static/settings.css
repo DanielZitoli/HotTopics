@@ -144,6 +144,14 @@
         width: calc(var(--page-width)*0.3);
         font-size: calc(var(--page-width)*0.04)
     }
+
+    .addPostChoice, .removePostChoice{
+        width: calc(var(--page-width)*.17);
+        height: calc(var(--page-width)*.1);
+        border-radius: calc(var(--page-width)*.05);
+        font-size: calc(var(--page-width)*.025);
+        margin-top: calc(var(--page-width)*.015);  
+    }
     
 }
 
