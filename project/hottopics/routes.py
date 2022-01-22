@@ -180,8 +180,12 @@ def search():
 @login_required
 def loadMorePosts():
     contentType = request.form.get("contentType", type=str)
+    if not contentType:
+        abort(404)
     accountUsername = request.form.get("accountUsername", type=str)
     pageNum = request.form.get("pageNum", type=int)
+    if not pageNum:
+        abort(400)
 
     if contentType == 'home':
         posts = Posts.query.order_by(Posts.posted.desc()).paginate(per_page=10, page=pageNum)

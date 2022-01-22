@@ -19,7 +19,7 @@ if ENV == 'dev':
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123456@localhost/hottopics'
 else:
     app.debug = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = ''
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://yrnugqkbbjqmqd:9af42259e3b62867f9add5761bd5295d29844ac6924232422ab9907012210de5@ec2-34-205-209-14.compute-1.amazonaws.com:5432/d1u80l661238l6'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
