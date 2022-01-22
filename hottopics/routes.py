@@ -20,8 +20,7 @@ from hottopics.helpers import display_date
 def index():
     if current_user.is_authenticated:
         return redirect("/home")
-
-    return render_template('index.html')
+    return redirect('/login')
     
 @app.route("/login", methods=["GET","POST"])
 def login():
