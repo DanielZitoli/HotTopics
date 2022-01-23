@@ -10,7 +10,6 @@ body{
     display: grid;
     grid-template-columns: 22% 600px 1fr;
     overflow: hidden;
-    overscroll-behavior: none;
 }
 
 main{
