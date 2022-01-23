@@ -1,1 +1,1 @@
-web: gunicorn hottopics:app
+web: gunicorn run:app

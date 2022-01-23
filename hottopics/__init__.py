@@ -28,3 +28,5 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'index'
 login_manager.login_message_category = 'info'
 
+from hottopics import routes
+
