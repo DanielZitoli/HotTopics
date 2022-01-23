@@ -1,6 +1,6 @@
 html{
     height: 100vw;
-    overflow-y: hidden;
+    overflow: hidden;
     overscroll-behavior: none;
 }
 body{
@@ -9,7 +9,8 @@ body{
     min-height: 100%;
     display: grid;
     grid-template-columns: 22% 600px 1fr;
-    overflow-y: hidden;
+    overflow: hidden;
+    overscroll-behavior: none;
 }
 
 main{
