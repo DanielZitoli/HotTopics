@@ -11,8 +11,11 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 
-
-ENV = 'prod'
+if os.environ.get('ENVIRONMENT_TYPE', '') == 'prod':
+    ENV = 'prod'
+else:
+    ENV = 'dev'
+    
 if ENV == 'dev':
     app.debug = True
     app.config['SECRET_KEY'] = '055a23834110d872426d5f7ee0ac198a'

@@ -43,6 +43,7 @@
 
 .form-button{
     position: absolute;
+    font-family: 'Roboto', sans-serif;
     margin-top: calc(var(--page-width)*.015); 
     left: 50%;
     transform: translateX(-50%);
@@ -141,7 +142,7 @@
     .multi-button{
         border-radius: calc(var(--page-width)*0.05);
         height: calc(var(--page-width)*0.1);
-        width: calc(var(--page-width)*0.3);
+        width: calc(var(--page-width)*0.35);
         font-size: calc(var(--page-width)*0.04)
     }
 
@@ -151,6 +152,12 @@
         border-radius: calc(var(--page-width)*.05);
         font-size: calc(var(--page-width)*.025);
         margin-top: calc(var(--page-width)*.015);  
+    }
+
+    #LogOutButtonBottom{
+        height: 10px;
+        width: 10px;
+        margin-top: 30vh;
     }
     
 }
