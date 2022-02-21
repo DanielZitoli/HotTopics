@@ -69,17 +69,18 @@ $(document).ready(function(){
     title = document.querySelector(".avoidtitle")
     add = document.querySelector(".add")
 
-    if(window.matchMedia("(hover:hover)").matches){
-        sidebarExpanded = true
-    } else {
-        sidebarExpanded = false
-        closeSidebar()
-    }
     startPos = 0
     currentPosition = 0
     currentSlide = 0
     animationID = null
 
+    if(window.matchMedia("(hover:hover)").matches){
+        sidebarExpanded = true
+        changeLinks()
+    } else {
+        sidebarExpanded = false
+        closeSidebar()
+    }
 
     function touchStart(event){
         startPos = getPositionX(event)

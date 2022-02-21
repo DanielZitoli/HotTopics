@@ -126,18 +126,16 @@ def settings():
         db.session.commit()
         return redirect("/account/" + current_user.username)
     if passwordForm.validate_on_submit():
-        if check_password_hash(current_user.hash, passwordForm.new_password.data):
-            newHash = generate_password_hash(passwordForm.new_password.data)
-            current_user.hash = newHash
-            db.session.commit()
-            return redirect(url_for('account', username=current_user.username))
-        else: 
-            flash('Wrong Password', 'danger')
+        newHash = generate_password_hash(passwordForm.new_password.data)
+        current_user.hash = newHash
+        db.session.commit()
+        return redirect(url_for('account', username=current_user.username))
     if LogOutForm.validate_on_submit():
         return redirect(url_for('logout'))
-    elif request.method == "GET":
+    if request.method == "GET":
         settingsForm.username.data = current_user.username
         settingsForm.email.data = current_user.email
+
     return render_template('settings.html', settingsForm=settingsForm, passwordForm=passwordForm, LogOutForm=LogOutForm)
 
 def save_picture(picture):
@@ -645,7 +643,7 @@ def loadSidebar():
         newRecommended.append(rec[0])
 
     if len(newRecommended) < 6:
-        extraUsers = Users.query.filter(Users.id.notin_(newRecommended)).limit(6-len(newRecommended)).all()
+        extraUsers = Users.query.filter(Users.id.notin_(newRecommended)).filter(Users.id.notin_(following_ids)).order_by(Users.followers.desc()).limit(6-len(newRecommended)).all()
         for user in extraUsers:
             newRecommended.append(user.id)
 
@@ -665,9 +663,6 @@ def loadSidebar():
 
     return jsonify(action='success', recommended=recommended)
 
-
-@app.route("/api/createUsers", methods=["POST"])
-@login_required
 def createUsers():
     data = request.form.get('data')
     dictionary = json.loads(data)

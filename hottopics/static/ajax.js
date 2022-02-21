@@ -140,13 +140,14 @@ $(document).ready(function(){
                 }
 
                 data.recommended.forEach(function(userData, i){
-                    if (userData.username.length > 14){
-                        userData.username = userData.username.substring(0, 13) + '...' 
-                    }
                     if (!(window.location.pathname.split('/')[1] == 'account' && window.location.pathname.split('/')[2] == userData.username)){
                         recommended = recommendedTemplate(userData)
                         $('.recommendedUsers').append(recommended)
-                    }
+                        RecUsername = $('#'+ userData.id +'-Recommended').find('.recommendedUsername')
+                        if (RecUsername.html().length > 14){
+                            RecUsername.html(RecUsername.html().substring(0, 13) + '...')
+                        }
+                    }   
                 })            
                 $('.recommendedContainer').show()
             }
@@ -362,6 +363,7 @@ $(document).ready(function(){
             data: {'user_id': follow_id},
 
             success: function(response){
+                console.log(response)
                 if (response.action==='error') {return} 
     
                 userRecommended = $('#' + follow_id + '-Recommended')
@@ -557,6 +559,7 @@ $(document).ready(function(){
         $('#LogOutModal').modal('show')
     });
 
+    //Add/Remove Post Choices
     $(".addPostChoice").click(function(){
         if($('.postChoice3').hasClass('hiddenPostChoice')){
             $('.postChoice3').removeClass('hiddenPostChoice')
@@ -590,29 +593,4 @@ $(document).ready(function(){
         }
     });
 
-
-
-
-
-    //create users
-    $('#doesntexist').click(function(){
-        $.ajax({
-            url: '/static/usernames.js',
-            type: 'GET',
-            DataType: "json",
-
-            success: function(data){
-                $.ajax({
-                    url: '/api/createUsers',
-                    type: 'POST',
-                    DataType: "json",
-                    data: {'data': data},
-
-                    success: function(response){
-                        console.log(response.action)
-                    }
-                })
-            } 
-        })
-    })
 });

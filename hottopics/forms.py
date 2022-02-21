@@ -4,12 +4,13 @@ from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Regexp
+from werkzeug.security import check_password_hash
 from hottopics.models import Users
 
 class Registration(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=16), Regexp('^\w+$')])
     email = StringField('Email', validators=[DataRequired(), Email()]) 
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password'), Length(min=6)])
     submit = SubmitField('Sign Up')
 
@@ -50,9 +51,13 @@ class UpdateAccount(FlaskForm):
 
 class PasswordChange(FlaskForm):
     password = PasswordField('Current Password', validators=[DataRequired()])
-    new_password = PasswordField('New Password', validators=[DataRequired(), Length(min=6)])
+    new_password = PasswordField('New Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('new_password')])
     submit = SubmitField('Change Password')
+
+    def validate_password(self, password):
+        if not check_password_hash(current_user.hash, password.data):
+            raise ValidationError("Incorrect Password.")
 
 class CreatePost(FlaskForm):
     content = TextAreaField('Post Content', validators=[DataRequired(), Length(max=150)])
