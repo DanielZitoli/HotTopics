@@ -28,6 +28,11 @@
 .add, .avoidtitle{
     transition: opacity .8s ease-out;
 }
+
+.avoidtitle{
+    pointer-events: none;
+}
+
 .add:hover{
     background-color: #ff5062 !important;
 }

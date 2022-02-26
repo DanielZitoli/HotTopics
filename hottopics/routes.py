@@ -59,7 +59,7 @@ def signup():
 def logout():
     """Signs User Out"""
     logout_user()
-    return redirect("/")
+    return redirect(url_for('login'))
 
 
 
@@ -115,7 +115,7 @@ def settings():
     settingsForm = UpdateAccount()
     passwordForm = PasswordChange()
     LogOutForm = LogOut()
-    if settingsForm.validate_on_submit():
+    if settingsForm.submitAccount.data and settingsForm.validate_on_submit():
         if settingsForm.picture.data:
             picture_file = save_picture(settingsForm.picture.data)
             if current_user.image_file != "default.jpeg":
@@ -125,12 +125,12 @@ def settings():
         current_user.email = settingsForm.email.data
         db.session.commit()
         return redirect("/account/" + current_user.username)
-    if passwordForm.validate_on_submit():
+    if passwordForm.submitPassword.data and passwordForm.validate_on_submit():
         newHash = generate_password_hash(passwordForm.new_password.data)
         current_user.hash = newHash
         db.session.commit()
         return redirect(url_for('account', username=current_user.username))
-    if LogOutForm.validate_on_submit():
+    if LogOutForm.submitLogOut.data and LogOutForm.validate_on_submit():
         return redirect(url_for('logout'))
     if request.method == "GET":
         settingsForm.username.data = current_user.username

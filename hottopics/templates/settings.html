@@ -12,7 +12,7 @@
                 </div>
                 <div class="my-modal-footer">
                     <button type="button" class="modal-button modal-button-white" data-dismiss="modal">Cancel</button>
-                    {{ LogOutForm.submit(class="modal-button modal-button-red", form="LogOutForm", id="LogOutSubmit") }}
+                    {{ LogOutForm.submitLogOut(class="modal-button modal-button-red", form="LogOutForm", id="LogOutSubmit") }}
                 </div>
             </div>
         </div>
@@ -63,7 +63,7 @@
         </fieldset>
 
         <div class="form-group">
-            {{ settingsForm.submit(class="multi-button form-button", id="settingsSubmit") }}
+            {{ settingsForm.submitAccount(class="multi-button form-button", id="settingsSubmit") }}
         </div> 
     </form>
 
@@ -116,7 +116,7 @@
         </fieldset>
 
         <div class="form-group">
-            {{ passwordForm.submit(class="multi-button form-button", id="passwordSubmit") }}
+            {{ passwordForm.submitPassword(class="multi-button form-button", id="passwordSubmit") }}
         </div> 
     </form>
 

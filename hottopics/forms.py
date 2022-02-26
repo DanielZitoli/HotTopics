@@ -35,7 +35,7 @@ class UpdateAccount(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=16)])
     email = StringField('Email', validators=[DataRequired(), Email()]) 
     picture = FileField("Update Profile Picture", validators=[FileAllowed(["jpg", "jpeg", "png"])])
-    submit = SubmitField('Update account')
+    submitAccount = SubmitField('Update account')
 
     def validate_username(self, username):
         if current_user.username != username.data:
@@ -53,7 +53,7 @@ class PasswordChange(FlaskForm):
     password = PasswordField('Current Password', validators=[DataRequired()])
     new_password = PasswordField('New Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('new_password')])
-    submit = SubmitField('Change Password')
+    submitPassword = SubmitField('Change Password')
 
     def validate_password(self, password):
         if not check_password_hash(current_user.hash, password.data):
@@ -68,5 +68,5 @@ class CreatePost(FlaskForm):
     submit = SubmitField('Create Post') 
 
 class LogOut(FlaskForm):
-    submit  = SubmitField('Confirm') 
+    submitLogOut  = SubmitField('Confirm') 
  
