@@ -51,9 +51,13 @@
 
 .form-button:hover{
     background-color: #ddd;
+    transform: scale(0.99) translateX(-50%);
 }
 
 .form-button:active{
+    transform: scale(0.99) translateX(-50%);
+}
+.form-button:focus{
     transform: scale(0.99) translateX(-50%);
 }
 

@@ -3,7 +3,7 @@ import os
 import random
 from typing import Type
 from PIL import Image
-from flask import json, redirect, render_template, request, flash, jsonify, abort, session
+from flask import json, redirect, render_template, request, flash, jsonify, abort
 from flask.helpers import url_for
 from sqlalchemy.orm import session, query
 from werkzeug.security import check_password_hash, generate_password_hash
