@@ -567,7 +567,6 @@ def deletePost():
             for like in likes:
                 db.session.delete(like)
             db.session.delete(comment1)
-    print(comments)
     db.session.delete(post)
     db.session.commit()
     return jsonify(action='deleted')
