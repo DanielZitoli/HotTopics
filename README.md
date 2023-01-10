@@ -1,7 +1,7 @@
 # HotTopics - social media web-app
-I built this app by myself as my Final Project for Harvard's CS50. HotTopic's is a social media app that lets users create posts with up to 4 choices and then like, comment and vote on other posts. You can stay connected by following other users to track the posts they make. My idea for this app was to create a site for people to share their thoughts and have others vote and comment, in other words, a place for people to guage opinions and debate.
+I built this app by myself as my Final Project for Harvard's CS50. HotTopics is a social media app that lets users create posts with up to 4 choices and then like, comment and vote on other posts. You can stay connected by following other users to track the posts they make. My idea for this app was to create a site for people to share their thoughts and have others vote and comment, in other words, a place for people to guage opinions and debate.
 
-## Video Demo
+# Video Demo
 As part of my submission to CS50, I've created a video going over the main functions of the app [here](https://youtu.be/9_j-9qrXA8M).
 
 # Technologies Used
